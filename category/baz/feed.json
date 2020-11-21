@@ -1,0 +1,16 @@
+{
+    "version": "https://jsonfeed.org/version/1",
+    "title": "大脚丫的印 • All posts by \"baz\" category",
+    "description": "smile everyDay",
+    "home_page_url": "http://example.com",
+    "items": [
+        {
+            "id": "http://example.com/2013/12/24/categories/",
+            "url": "http://example.com/2013/12/24/categories/",
+            "title": "Categories",
+            "date_published": "2013-12-24T15:30:09.000Z",
+            "content_html": "<p>This post contains 3 categories. Make sure your theme can display all of the categories.</p>\n",
+            "tags": []
+        }
+    ]
+}
