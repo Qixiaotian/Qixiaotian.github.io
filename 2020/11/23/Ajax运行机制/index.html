@@ -1,0 +1,1888 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="language">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#FFF">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="icon" type="image/ico" sizes="32x32" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="">
+  <link rel="manifest" href="/images/manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+<link rel="alternate" type="application/rss+xml" title="" href="http://example.com/rss.xml" />
+<link rel="alternate" type="application/atom+xml" title="" href="http://example.com/atom.xml" />
+<link rel="alternate" type="application/json" title="" href="http://example.com/feed.json" />
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Mulish:300,300italic,400,400italic,700,700italic%7CFredericka%20the%20Great:300,300italic,400,400italic,700,700italic%7CNoto%20Serif%20JP:300,300italic,400,400italic,700,700italic%7CNoto%20Serif%20SC:300,300italic,400,400italic,700,700italic%7CInconsolata:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="/css/app.css?v=0.2.5">
+
+  
+  <meta name="keywords" content="about" />
+
+
+<link rel="canonical" href="http://example.com/2020/11/23/Ajax%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/">
+
+
+
+  <title>
+Ajax运行原理 |
+大脚丫的印记 = </title>
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div id="loading">
+    <div class="cat">
+      <div class="body"></div>
+      <div class="head">
+        <div class="face"></div>
+      </div>
+      <div class="foot">
+        <div class="tummy-end"></div>
+        <div class="bottom"></div>
+        <div class="legs left"></div>
+        <div class="legs right"></div>
+      </div>
+      <div class="paw">
+        <div class="hands left"></div>
+        <div class="hands right"></div>
+      </div>
+    </div>
+  </div>
+  <div id="container">
+    <header id="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="inner">
+        <div id="brand">
+          <div class="pjax">
+          
+  <h1 itemprop="name headline">Ajax运行原理
+  </h1>
+  
+<div class="meta">
+  <span class="item" title="Created: 2020-11-23 15:42:00">
+    <span class="icon">
+      <i class="ic i-calendar"></i>
+    </span>
+    <span class="text">Posted on</span>
+    <time itemprop="dateCreated datePublished" datetime="2020-11-23T15:42:00+08:00">2020-11-23</time>
+  </span>
+</div>
+
+
+          </div>
+        </div>
+        <nav id="nav">
+  <div class="inner">
+    <div class="toggle">
+      <div class="lines" aria-label="Toggle navigation bar">
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+      </div>
+    </div>
+    <ul class="menu">
+      <li class="item title"><a href="/" rel="start">大脚丫的印记</a></li>
+    </ul>
+    <ul class="right">
+      <li class="item theme">
+        <i class="ic i-sun"></i>
+      </li>
+      <li class="item search">
+        <i class="ic i-search"></i>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+      </div>
+      <div id="imgs" class="pjax">
+        <ul>
+          <li class="item" data-background-image="https://tva2.sinaimg.cn/large/6833939bly1gipeubcbajj20zk0m8h1h.jpg"></li>
+          <li class="item" data-background-image="https://tva2.sinaimg.cn/large/6833939bly1giclgi503lj20zk0m8hdt.jpg"></li>
+          <li class="item" data-background-image="https://tva2.sinaimg.cn/large/6833939bly1gipetv6p75j20zk0m8x6p.jpg"></li>
+          <li class="item" data-background-image="https://tva2.sinaimg.cn/large/6833939bly1giclfw2t96j20zk0m8x6p.jpg"></li>
+          <li class="item" data-background-image="https://tva2.sinaimg.cn/large/6833939bly1gicit31ffoj20zk0m8naf.jpg"></li>
+          <li class="item" data-background-image="https://tva2.sinaimg.cn/large/6833939bly1gipesx5fdwj20zk0m81kx.jpg"></li>
+        </ul>
+      </div>
+    </header>
+    <div id="waves">
+      <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+        <defs>
+          <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+        </defs>
+        <g class="parallax">
+          <use xlink:href="#gentle-wave" x="48" y="0" />
+          <use xlink:href="#gentle-wave" x="48" y="3" />
+          <use xlink:href="#gentle-wave" x="48" y="5" />
+          <use xlink:href="#gentle-wave" x="48" y="7" />
+        </g>
+      </svg>
+    </div>
+    <main>
+      <div class="inner">
+        <div id="main" class="pjax">
+          
+  <div class="article wrap">
+    
+<div class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+<i class="ic i-home"></i>
+<span><a href="/">Home</a></span>
+</div>
+
+    <article itemscope itemtype="http://schema.org/Article" class="post block" lang="language">
+  <link itemprop="mainEntityOfPage" href="http://example.com/2020/11/23/Ajax%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/">
+
+  <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="image" content="/images/avatar.jpg">
+    <meta itemprop="name" content="">
+    <meta itemprop="description" content=", smile everyDay">
+  </span>
+
+  <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="">
+  </span>
+
+  <div class="body md" itemprop="articleBody">
+    
+
+    <h1 id="ajax"><a class="markdownIt-Anchor" href="#ajax">#</a> AJAX</h1>
+<h2 id="服务器与客户端"><a class="markdownIt-Anchor" href="#服务器与客户端">#</a> 服务器与客户端</h2>
+<h3 id="服务器server"><a class="markdownIt-Anchor" href="#服务器server">#</a> 服务器（server）</h3>
+<p>我们如果想把自己的网页，让其它人能够访问，就必须要用到服务器的知识了。</p>
+<h4 id="作用"><a class="markdownIt-Anchor" href="#作用">#</a> 作用</h4>
+<p>服务器是一个非常重要的概念，做为一名前端人员，我们在实现的工作过程可能不会直接与服务器打交道，但是，我们应该理解所有的应用都需要有服务器的支持。</p>
+<p>比如：生活中我们也会听到服务器这三个字。</p>
+<p>（一台服务器服务于多台设备）</p>
+<p>简单来理解：</p>
+<blockquote>
+<p>服务器 = 硬件配置高的电脑 + 安装特殊软件</p>
+</blockquote>
+<p>是提供服务的机器。给其它设备（电脑，手机，平板…）提供某种特殊服务的电脑</p>
+<h4 id="服务器的分类"><a class="markdownIt-Anchor" href="#服务器的分类">#</a> 服务器的分类</h4>
+<p>简单来理解：</p>
+<blockquote>
+<p>服务器 = 硬件配置高的电脑 + 安装特殊软件</p>
+</blockquote>
+<p>安装的软件不同，它能提供的服务也不同。 根据所能提供的服务不同，可分成很多种：</p>
+<ul>
+<li>
+<p>web 服务器： 安装了能提供 <code>web服务</code> 的软件。如 iis, nginx, apache 等。</p>
+</li>
+<li>
+<p>ftp……: 上传文件</p>
+</li>
+</ul>
+<h3 id="客户端client"><a class="markdownIt-Anchor" href="#客户端client">#</a> 客户端（client)</h3>
+<p>客户端：连接到服务器，享受服务的设备，就是客户端。</p>
+<h3 id="访问-web-服务器的基本流程"><a class="markdownIt-Anchor" href="#访问-web-服务器的基本流程">#</a> 访问 web 服务器的基本流程</h3>
+<h4 id="商场买电脑的过程"><a class="markdownIt-Anchor" href="#商场买电脑的过程">#</a> 商场买电脑的过程</h4>
+<p>商场买东西</p>
+<p>1. 定位商场的地址</p>
+<p>2. 到商场，告诉专卖店你的需要</p>
+<p>3. 给你电脑</p>
+<p>4. 回家使用电脑</p>
+<h4 id="访问-web-服务器"><a class="markdownIt-Anchor" href="#访问-web-服务器">#</a> 访问 web 服务器</h4>
+<p><img data-src="https://img-blog.csdnimg.cn/20200218111736915.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTE3NjQxNQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>
+（请求响应流程示意图）</p>
+<p>基本流程</p>
+<ol>
+<li>
+<p>确认地址。用户在浏览器（客户端）地址栏输入要访问的网站网址（URL）</p>
+</li>
+<li>
+<p>发送请求。浏览器向服务器发送请求 (request)，告知服务器要获取的内容</p>
+</li>
+<li>
+<p>获取响应。服务端收到浏览器发送的请求，并把处理的结果返回给浏览器 (response)</p>
+</li>
+<li>
+<p>显示内容。浏览器将服务端返回的结果显示到界面上</p>
+</li>
+</ol>
+<h3 id="本地虚拟-web-服务器"><a class="markdownIt-Anchor" href="#本地虚拟-web-服务器">#</a> 本地虚拟 web 服务器</h3>
+<p>为了方便学习，我们会在自己的电脑上安装服务器软件，把自己的电脑虚拟成服务器。换句话说，我们的电脑既是客户端，又是服务器。</p>
+<p>我们需要提供 web 服务：让其它同学能够访问我们网页。</p>
+<blockquote>
+<p>web 服务器 = 硬件配置高的电脑 + web 软件（如 iis,apache, nginx）</p>
+</blockquote>
+<p>方法：</p>
+<ul>
+<li>安装特殊的 web 软件：iis apache nginx</li>
+<li>安装 vscode 的插件 live-server</li>
+<li>安装  <code>Teseve</code></li>
+<li>使用第三方的集成软件 app_server, phpStudy 等</li>
+<li><code>使用黑盒工具app.exe</code></li>
+</ul>
+<p>其它任何一种方法都可以把你的电脑虚拟成服务器，让其它同学来访问。</p>
+<h4 id="介绍黑盒服务器"><a class="markdownIt-Anchor" href="#介绍黑盒服务器">#</a> 介绍黑盒服务器</h4>
+<p>参见具体的文档。</p>
+<ul>
+<li>
+<p>启动软件</p>
+<ul>
+<li>注意观察端口号。以 3005 为例。</li>
+</ul>
+</li>
+<li>
+<p>访问网页</p>
+<ol>
+<li>先准备文件。把网页放在 public 文件夹下。</li>
+<li>访问：
+<ol>
+<li>方法一：<span class="exturl" data-url="aHR0cDovL2xvY2FsaG9zdDozMDA1L2luZGV4Lmh0bWw=">http://localhost:3005/index.html</span></li>
+<li>方法二：<span class="exturl" data-url="aHR0cDovL3huLS04cHYyYQ==">http:// 本机</span> ip/index.html</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>
+<p>访问数据</p>
+<p>行话也称为接口。get 类型的接口可以直接在浏览器中观看效果。</p>
+</li>
+</ul>
+<h3 id="ajax-技术的好处"><a class="markdownIt-Anchor" href="#ajax-技术的好处">#</a> AJAX 技术的好处</h3>
+<p>总结如下两点好处：</p>
+<ol>
+<li>
+<p>局部更新，提升用户体验，提升性能。</p>
+</li>
+<li>
+<p>分离开发，提高开发效率。在项目实际开发过程中，ajax 是一个必不可少的技术，是前后端分离开发的基础。</p>
+<ol>
+<li>后端同学提供接口。这个接口我们可以理解是一个 <code>函数</code> ：它的内部进行业务处理，数据库访问等等操作，并返回结果。如何去实现这函数的功能就是后端同学的任务了。</li>
+<li>前端同学调用接口获取数据（有其特定的格式），然后再把数据转化成的图文并茂的网页。</li>
+</ol>
+</li>
+</ol>
+<h3 id="通过-network-面板来观察-ajax"><a class="markdownIt-Anchor" href="#通过-network-面板来观察-ajax">#</a> 通过 network 面板来观察 AJAX</h3>
+<p>掌握：</p>
+<ul>
+<li>network 面板</li>
+<li>all / xhr</li>
+<li>response</li>
+</ul>
+<h3 id="ajax-是什么"><a class="markdownIt-Anchor" href="#ajax-是什么">#</a> ajax 是什么</h3>
+<p>AJAX ，全称是：<strong>A</strong>synchronous <strong>J</strong>avaScript <strong>A</strong>nd <strong>X</strong>ml 。 （async：表示异步，sync：表示同步）</p>
+<ul>
+<li>异步的 JavaScript 和 XML。</li>
+<li>是一种创建交互式网页应用的网页开发技术。并不是一种新技术，而是一种解决方案，早在在 1998 年就开始使用。</li>
+<li>异步表示不阻塞：浏览器在请求数据时，并不会阻塞用户后续的操作。理解为浏览器派了一个小弟去服务器拿数据了。</li>
+<li>XML 表示一种数据格式，最初设计 AJAX 时，从服务器返回的数据是 XML 格式的，后面慢慢被 JSON 数据格式取代了。</li>
+<li>更具体一点， <code>浏览器</code> 通过内置对象  <code>XMLHttpRequest</code>  向服务器发起请求，并可以接收服务器返回给浏览器的数据，这一过程或实现这一过程的技术就是我们所说的 Ajax。</li>
+</ul>
+<h2 id="使用-jquery-提供的-ajax-功能"><a class="markdownIt-Anchor" href="#使用-jquery-提供的-ajax-功能">#</a> 使用 jQuery 提供的 AJAX 功能</h2>
+<h3 id="jquery-体验-ajax"><a class="markdownIt-Anchor" href="#jquery-体验-ajax">#</a> jquery 体验 ajax</h3>
+<p>第一个 $.ajax 请求：获取服务器上的时间 <code>common/getCurrentTime</code></p>
+<p>基本流程：</p>
+<ol>
+<li>
+<p>准备工作</p>
+<p>确保服务器端是已经就绪的。直接在地址栏中使用接口，测试接口 <code>common/getCurrentTime</code></p>
+</li>
+<li>
+<p>新建页面，引入 jquery。</p>
+</li>
+<li>
+<p>参考给定的 $.ajax 格式，发送请求。</p>
+<ol>
+<li>讲解回调函数的含义。</li>
+</ol>
+</li>
+</ol>
+<h4 id="ajax的基本格式"><a class="markdownIt-Anchor" href="#ajax的基本格式">#</a> $.ajax () 的基本格式</h4>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$.ajax(</span><br><span class="line">  url, <span class="comment">//  &#x27;/common/getCurrentTime&#x27;,</span></span><br><span class="line">  &#123;</span><br><span class="line">    type: <span class="string">&quot;get&quot;</span>, <span class="comment">// post</span></span><br><span class="line">    data: &#123; <span class="attr">id</span>: <span class="number">1</span> &#125;,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span> (<span class="params">result</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(result);</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"><span class="comment">// - url : 表示请求的地址，可以省略域名。</span></span><br><span class="line"><span class="comment">// - type: 表示请求的类型，常见取值 get，post。如果不写，默认为&#x27;get&#x27;</span></span><br><span class="line"><span class="comment">// - data: 表示发送请求时附加的参数，如果没有参数，可省略</span></span><br><span class="line"><span class="comment">// - success：它是一个回调函数。当请求成功之后会自动调用这个函数，它的第一个参数是服务器端返回的数据。</span></span><br></pre></td></tr></table></figure>
+<p>还有其它的配置项，我们在后面再去学习。</p>
+<h4 id="回调函数callback-functions"><a class="markdownIt-Anchor" href="#回调函数callback-functions">#</a> 回调函数 (Callback Functions)</h4>
+<p>作用：用于对特定的事件或条件进行响应。</p>
+<p>两层含义：</p>
+<pre><code>- 1. 函数。表示它是一个函数，是可以被执行的，能做具体操作的函数。
+- 2. 回调。在某个时刻，或者某个事件发生`自动去调用这个函数`。
+</code></pre>
+<p>代码示例：</p>
+<p>​ 如下均是回调函数的使用</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;)</span><br><span class="line">$(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;)</span><br><span class="line">$(<span class="string">&quot;#btn&quot;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;)</span><br><span class="line">[].sort(<span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>)</span>&#123; <span class="keyword">return</span> a - b;&#125;)</span><br><span class="line">[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>].forEach(<span class="function"><span class="keyword">function</span>(<span class="params">item,index,self</span>)</span>&#123;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ok</span>(<span class="params">result</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(result)</span><br><span class="line">&#125;</span><br><span class="line">$.ajax(</span><br><span class="line">  url,<span class="comment">//  &#x27;/common/getCurrentTime&#x27;,</span></span><br><span class="line">  &#123;</span><br><span class="line">     type: <span class="string">&#x27;get&#x27;</span>,<span class="comment">// post</span></span><br><span class="line">     data: &#123;<span class="attr">id</span>:<span class="number">1</span>&#125;,</span><br><span class="line">     success: ok</span><br><span class="line">  &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>注意：</p>
+<p>​ 一般情况下，回调函数都是匿名函数。但，也是可以给它们起名字的。</p>
+<h3 id="带参数的-get-请求"><a class="markdownIt-Anchor" href="#带参数的-get-请求">#</a> 带参数的 get 请求</h3>
+<h4 id="用户名检测"><a class="markdownIt-Anchor" href="#用户名检测">#</a> 用户名检测</h4>
+<p>上一个基本示例中，我们的请求并没有带上参数，而在真实的开发中，我们的请求经常是要带参数的。你可以理解为用户名占用检测这个案例就来解决请求接口要带参数的问题。并且用户名占用检测也是一个比好</p>
+<p>[外链图片转存失败，源站可能有防盗链机制，建议将图片保存下来直接上传 (img-FBJ848MI-1581995138719)(ajax 讲义.assets/ 案例 - 用户名检测.gif)]</p>
+<p>目标：仿照<span class="exturl" data-url="aHR0cHM6Ly9hY2NvdW50LmNuYmxvZ3MuY29tL3NpZ251cA==">博客园注册</span>，实现用户名占用检测效果；学习使用带参数的 get 请求；</p>
+<ol>
+<li>
+<p>测试接口。直接在地址栏中使用接口（common/checkUser），注意在问号后附加参数的问题</p>
+</li>
+<li>
+<p>给出静态代码</p>
+</li>
+<li>
+<p>分析要实现的功能；</p>
+</li>
+<li>
+<p>两种方法传参：</p>
+<ul>
+<li>在 url 中拼接参数实现</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>介绍 $.ajax 的参数中的 data 值，可以简化自己拼接参数的过程。</li>
+</ul>
+<h3 id="jquery-ajax-post"><a class="markdownIt-Anchor" href="#jquery-ajax-post">#</a> jquery-ajax-post</h3>
+<h2 id="常见的两种请求方式-get-post"><a class="markdownIt-Anchor" href="#常见的两种请求方式-get-post">#</a> 常见的两种请求方式 get-post</h2>
+<ul>
+<li>get</li>
+<li>post</li>
+</ul>
+<h3 id="字面理解"><a class="markdownIt-Anchor" href="#字面理解">#</a> 字面理解</h3>
+<ul>
+<li>
+<p>不同点：</p>
+<ul>
+<li>get ：获取，得到。这种方式请求用于向服务器请求资源（图片，文件，数据…）。它是最常见的请求方式。它的重点在于，它只是请求，而 <code>不会改变</code> 服务器上的资源。</li>
+<li>post：派送，投递。这种方式的请求用于向服务器上提交数据，它的重点在于，它 <code>可能会修改</code> 服务器上的资源。</li>
+</ul>
+</li>
+<li>
+<p>相同点</p>
+<ul>
+<li>get 和 post 请求都可以在发请求时附带一些数据。例如：根据用户名去检查这个用户是否被占用；在论坛中注册一个账号。</li>
+<li>get 和 post 请求都能够从服务器上获取返回的数据。</li>
+</ul>
+</li>
+</ul>
+<h3 id="实操对比"><a class="markdownIt-Anchor" href="#实操对比">#</a> 实操对比</h3>
+<p>get 传数据直接显示在 url 中</p>
+<pre><code>-  query string parameters
+</code></pre>
+<p>post 传递数据更安全</p>
+<ul>
+<li>form Data</li>
+</ul>
+<h3 id="常用场景"><a class="markdownIt-Anchor" href="#常用场景">#</a> 常用场景</h3>
+<p>常见的应用场景适用于 get 还是 post?</p>
+<ul>
+<li>查看商品详情 (get)</li>
+<li>把一件商品放入购物车 (post)</li>
+<li>修改登陆密码 (post)</li>
+<li>发表一个帖子 (post)</li>
+<li>删除一个用户 (post)</li>
+</ul>
+<p>注意：在实际的开发过程中，由于接口是后端同学已经给定的，所以，可能它们能够支持多种请求方式，也可以只支持其中一种。</p>
+<h2 id="jqueryajax-实现留言板"><a class="markdownIt-Anchor" href="#jqueryajax-实现留言板">#</a> JQuery.ajax 实现留言板</h2>
+<p>目标： 通过 <code>message/addMsg</code>  和 <code>message/getMsg</code>  这两个接口，实现一个动态的留言板功能</p>
+<p>基本内容：</p>
+<ol>
+<li>效果展示及功能分析</li>
+<li>获取留言</li>
+<li>发送留言</li>
+<li>小结</li>
+</ol>
+<h3 id="获取留言并显示"><a class="markdownIt-Anchor" href="#获取留言并显示">#</a> 获取留言并显示</h3>
+<p>基本流程</p>
+<p>发送请求</p>
+<p>分析回来的数据</p>
+<p>使用 forEach 或者 for 循环进行数组遍历，并进行数据拼接</p>
+<p>修改显示区的 dom</p>
+<h3 id="模板字符串"><a class="markdownIt-Anchor" href="#模板字符串">#</a> 模板字符串</h3>
+<p>在做字符串拼接时，使用 <code>+</code>  来拼接复杂内容是很麻烦的，而模板字符串可以解决这个问题。</p>
+<p>格式：` <code>$&#123;变量&#125;</code>   <code>$&#123;表达式&#125;</code> `</p>
+<p>语法：</p>
+<ul>
+<li>模板字符串使用反引号 <strong>`</strong>把内容括起来，类似于普通字符串的&quot;&quot;。</li>
+<li>${} 充当界定符的作用，其中可以写变量名，表达式等。</li>
+<li>允许字符串内部进行换行，代码更好读更好的体验</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> name = <span class="string">&#x27;zs&#x27;</span>;</span><br><span class="line"><span class="keyword">let</span> age = <span class="number">18</span>;</span><br><span class="line"><span class="comment">// 拼接多个变量，在模板字符串中使用占位的方式，更易懂</span></span><br><span class="line"><span class="keyword">let</span> str = <span class="string">`我是<span class="subst">$&#123;name&#125;</span>，今年<span class="subst">$&#123;age&#125;</span>`</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 内容过多可以直接换行</span></span><br><span class="line"><span class="keyword">let</span> obj = [&#123;<span class="attr">name</span>: <span class="string">&#x27;flex&#x27;</span>, <span class="attr">age</span>: <span class="number">20</span>&#125;,&#123;<span class="attr">name</span>: <span class="string">&#x27;james&#x27;</span>, <span class="attr">age</span>: <span class="number">21</span>&#125;];</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> arr = [<span class="string">&#x27;175cm&#x27;</span>, <span class="string">&#x27;60kg&#x27;</span>];</span><br><span class="line"><span class="keyword">let</span> html = <span class="string">`</span></span><br><span class="line"><span class="string">	&lt;div&gt;</span></span><br><span class="line"><span class="string">		&lt;ul&gt;</span></span><br><span class="line"><span class="string">			&lt;li&gt;<span class="subst">$&#123;obj.name&#125;</span>&lt;/li&gt;</span></span><br><span class="line"><span class="string">			&lt;li&gt;<span class="subst">$&#123;obj.age&#125;</span>&lt;/li&gt;</span></span><br><span class="line"><span class="string">			&lt;li&gt;<span class="subst">$&#123;arr[<span class="number">0</span>]&#125;</span>&lt;/li&gt;</span></span><br><span class="line"><span class="string">			&lt;li&gt;<span class="subst">$&#123;arr[<span class="number">1</span>]&#125;</span>&lt;/li&gt;</span></span><br><span class="line"><span class="string">		&lt;/ul&gt;</span></span><br><span class="line"><span class="string">	&lt;/div&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="原生-ajax-的实现"><a class="markdownIt-Anchor" href="#原生-ajax-的实现">#</a> 原生 ajax 的实现</h2>
+<p>在实际的开发中，我们会直接使用如 jquery 这样的第三方工具库来调用 ajax，而不会自己去手写一个原生的。但对于学习者来说，深入学习原生 ajax 能帮助我们更好的理解和掌握 。</p>
+<p>目标： 能 <code>手写ajax</code> ；掌握 XMLHttpRequest 的用法；</p>
+<h3 id="第一个原生的-ajax-请求"><a class="markdownIt-Anchor" href="#第一个原生的-ajax-请求">#</a> 第一个原生的 ajax 请求</h3>
+<p>手写一个 ajax 请求，来获取服务器时间。</p>
+<p>4 步：</p>
+<ol>
+<li>new 一个 xhr 对象。</li>
+<li>设置请求信息。</li>
+<li>设置回调函数，处理请求结果。</li>
+<li>发送请求。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 第一步： 新建一个XMLHttpRequest对象(xhr)</span></span><br><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第二步： 设置请求。 xhr.open(请求的方式，get|post, 请求的url地址);</span></span><br><span class="line">xhr.open(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;common/getCurrentTime&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第三步：设置回调函数。返回的数据存放在xhr.responseText中。</span></span><br><span class="line">xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.info(<span class="string">&quot;从服务器返回的数据&quot;</span>, xhr.responseText);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 第四步： 发送请求。 xhr.send()</span></span><br><span class="line">xhr.send();</span><br></pre></td></tr></table></figure>
+<h3 id="理解-xmlhttprequest-对象"><a class="markdownIt-Anchor" href="#理解-xmlhttprequest-对象">#</a> 理解 XMLHttpRequest 对象</h3>
+<ul>
+<li>ajax 的功能是基于 XMLHttpRequest 对象来实现的。</li>
+<li>它是内置对象，充当构造器使用。</li>
+<li>浏览器中的 network 中查看  <code>xhr</code></li>
+</ul>
+<p>属性和方法：</p>
+<ul>
+<li>open()</li>
+<li>send()</li>
+<li>onload(function(){})</li>
+<li>responseText</li>
+</ul>
+<h3 id="原生-ajax-带参数的-get"><a class="markdownIt-Anchor" href="#原生-ajax-带参数的-get">#</a> 原生 ajax - 带参数的 get</h3>
+<p>get 带参数 - 检测用户名是否占用</p>
+<p>get 带参数的格式：附加在请求的 url 地址后面。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url?参数1&#x3D;值1&amp;参数2&#x3D;值2&amp;参数3&#x3D;值3...</span><br></pre></td></tr></table></figure>
+<ul>
+<li>？</li>
+<li>&amp;</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 第一步： 新建一个XMLHttpRequest对象(xhr)</span></span><br><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.info(xhr);</span><br><span class="line"><span class="comment">// 第二步： 设置请求。 xhr.open(请求的方式，get|post, 请求的url地址);</span></span><br><span class="line">xhr.open(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;common/checkuser?username=&quot;</span> + username);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第三步： 发送请求。 xhr.send()</span></span><br><span class="line">xhr.send();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第四步： 设置回调函数。请求成功之后，获取服务器返回的数据.</span></span><br><span class="line"><span class="comment">// 返回的数据存放在xhr.responseText中。</span></span><br><span class="line">xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.info(<span class="string">&quot;从服务器返回的数据&quot;</span>, xhr.responseText);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="原生-ajax-post-请求"><a class="markdownIt-Anchor" href="#原生-ajax-post-请求">#</a> 原生 ajax-post 请求</h3>
+<h4 id="post-请求的格式"><a class="markdownIt-Anchor" href="#post-请求的格式">#</a> post 请求的格式</h4>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1. 创建xhr对象</span></span><br><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line"><span class="comment">//2. 初始化请求</span></span><br><span class="line">xhr.open(<span class="string">&quot;post&quot;</span>, 服务器地址);</span><br><span class="line"><span class="comment">//3. 设置请求头，固定写法</span></span><br><span class="line">xhr.setRequestHeader(<span class="string">&quot;Content-type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line"><span class="comment">//4. 监听响应的回调函数</span></span><br><span class="line">xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(xhr.responseText);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//5. 发送请求</span></span><br><span class="line">xhr.send(<span class="string">&quot;提交给服务器数据字符串&quot;</span>); <span class="comment">// &#x27;a=1&amp;b=3&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>注意：</p>
+<ul>
+<li>要设置请求头</li>
+<li>提交给服务器的数据写在 send () 中。</li>
+</ul>
+<h4 id="案例用户登陆"><a class="markdownIt-Anchor" href="#案例用户登陆">#</a> 案例：用户登陆 *</h4>
+<p>代码资料：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">  <span class="selector-class">.container</span> &#123;</span></span><br><span class="line">    width: 800px;</span><br><span class="line">    padding: 2em;</span><br><span class="line">    margin: 40px auto;</span><br><span class="line"><span class="css">    <span class="selector-tag">border</span>: 1<span class="selector-tag">px</span> <span class="selector-tag">solid</span> <span class="selector-id">#ccc</span>;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="css">  <span class="selector-class">.container</span> <span class="selector-tag">label</span> &#123;</span></span><br><span class="line">    display: inline-block;</span><br><span class="line">    width: 80px;</span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;container&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h2</span>&gt;</span>用户登陆<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>正确的账号信息是:用户名admin,密码admin<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">&quot;userName&quot;</span>&gt;</span>用户名<span class="tag">&lt;/<span class="name">label</span></span></span><br><span class="line"><span class="tag">    &gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;请输入用户名&quot;</span> <span class="attr">id</span>=<span class="string">&quot;userName&quot;</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">&quot;password&quot;</span>&gt;</span>密码<span class="tag">&lt;/<span class="name">label</span></span></span><br><span class="line"><span class="tag">    &gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;请输入密码&quot;</span> <span class="attr">id</span>=<span class="string">&quot;password&quot;</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">&quot;btnLogin&quot;</span>&gt;</span>登录<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;result&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>整体分析</p>
+<ul>
+<li>传参</li>
+<li>content-type:application/x-www-form-urlencoded</li>
+</ul>
+<p>设置与不设置头的区别：</p>
+<p>一定设置请求头。</p>
+<h3 id="原生-ajax-中-get-和-post-区别"><a class="markdownIt-Anchor" href="#原生-ajax-中-get-和-post-区别">#</a> 原生 ajax 中 get 和 post 区别</h3>
+<ul>
+<li>
+<p>get</p>
+<ul>
+<li>参数拼接在 url（ <code>url?name=1&amp;age=30</code> ）</li>
+<li>由于浏览器对 url 长度的支持（各个浏览器均不同）是有限，所以，它只能附加少量的数据。</li>
+</ul>
+</li>
+<li>
+<p>post</p>
+<ul>
+<li>要设置请求头:  <code>xhr.setRequestHeader('content-type','application/x-www-form-urlencoded')</code></li>
+<li>参数写在 send () 方法中: <code>send('name=1&amp;age=30')</code></li>
+<li>相对于 get 来说，没有传参大小的限制。</li>
+</ul>
+</li>
+</ul>
+<h3 id="onreadystatechange-事件和-readystate-属性"><a class="markdownIt-Anchor" href="#onreadystatechange-事件和-readystate-属性">#</a> onreadystatechange 事件和 readyState 属性</h3>
+<h4 id="onreadystatechange-事件"><a class="markdownIt-Anchor" href="#onreadystatechange-事件">#</a> onreadystatechange 事件</h4>
+<p><code>onload</code>  是 HTML5 （2014 年 9 月）以后新增的方便获取响应的事件，一些老的浏览器 (ie6,ie7,ie8) 对 onload 是不支持的。通过代码来验证这一点：以下代码在 ie6,ie7,ie8 中并不能使用。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line"><span class="comment">// open 方法的第一个参数的作用就是设置请求的 method</span></span><br><span class="line">xhr.open(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;common/getCurrentTime&quot;</span>);</span><br><span class="line"></span><br><span class="line">xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  alert(<span class="string">&quot;ok&quot;</span>);</span><br><span class="line">&#125;;</span><br><span class="line">xhr.send();</span><br></pre></td></tr></table></figure>
+<p>在 html5 之前，获取服务器返回内容的时候使用的是  <code>onreadystatechange</code>  事件，这个事件是在 xhr 对象状态变化时被触发，而一次请求过程中， <code>XMLHttpRequest</code>  对象的状态会发生 <code>多次变化</code> ，也就意味着这个事件会被触发多次。</p>
+<p>onreadystatechange</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line"><span class="comment">// open 方法的第一个参数的作用就是设置请求的 method</span></span><br><span class="line">xhr.open(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;common/getCurrentTime&quot;</span>);</span><br><span class="line"><span class="comment">// onreadystatechange</span></span><br><span class="line">xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;事件被触发了&quot;</span>);</span><br><span class="line">&#125;;</span><br><span class="line">xhr.send();</span><br></pre></td></tr></table></figure>
+<h4 id="xhr-对象的状态"><a class="markdownIt-Anchor" href="#xhr-对象的状态">#</a>  <code>xhr</code>  对象的状态</h4>
+<p>一共有 5 种，用 <code>readyState</code>  属性表示，详见下表</p>
+<table>
+<thead>
+<tr>
+<th>readyState</th>
+<th>状态描述</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>UNSENT</td>
+<td>XHR 被创建，但尚未调用  <code>open()</code>  方法。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>OPENED</td>
+<td><code>open()</code>  方法已经被调用，建立了连接。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>HEADERS_RECEIVED</td>
+<td><code>send()</code>  方法已经被调用，并且已经可以获取状态行和响应头。</td>
+</tr>
+<tr>
+<td>3</td>
+<td>LOADING</td>
+<td>响应体下载中，  <code>responseText</code>  属性可能已经包含部分数据。</td>
+</tr>
+<tr>
+<td><strong>4</strong></td>
+<td><strong>DONE</strong></td>
+<td>** 响应体下载完成，可以直接使用  <code>responseText</code></td>
+</tr>
+</tbody>
+</table>
+<p>一次正常的 send () 话，xhr.readStatus 的值的变化是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0 -&gt; 1 -&gt; 2 -&gt; 3 -&gt; 4</span><br></pre></td></tr></table></figure>
+<p>[外链图片转存失败，源站可能有防盗链机制，建议将图片保存下来直接上传 (img-Oax7sEsH-1581995138723)(ajax 讲义.assets/1559037455667.png)]</p>
+<h3 id="get-请求在-ie-中的缓存问题"><a class="markdownIt-Anchor" href="#get-请求在-ie-中的缓存问题">#</a> get 请求在 IE 中的缓存问题</h3>
+<p>如下代码，在 <code>ie</code>  中运行：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">    &lt;button id=<span class="string">&quot;btn&quot;</span>&gt;获取时间&lt;/button&gt;</span><br><span class="line">&lt;label <span class="keyword">for</span>=<span class="string">&quot;&quot;</span> id=<span class="string">&quot;lblTimer&quot;</span>&gt;&lt;/label&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    <span class="built_in">document</span>.getElementById(<span class="string">&#x27;btn&#x27;</span>).onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    <span class="built_in">console</span>.log(xhr.readyState);</span><br><span class="line">    <span class="comment">// open 方法的第一个参数的作用就是设置请求的 method</span></span><br><span class="line">    xhr.open(<span class="string">&#x27;get&#x27;</span>, <span class="string">&#x27;common/getCurrentTime&#x27;</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(xhr.readyState);</span><br><span class="line">    xhr.send();</span><br><span class="line">    <span class="comment">// 更改事件为onreadystatechange</span></span><br><span class="line">    xhr.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">// 表示从服务器端返回的数据已经全部ok了。</span></span><br><span class="line">        <span class="keyword">if</span> (xhr.readyState == <span class="number">4</span>) &#123;</span><br><span class="line">            <span class="built_in">document</span>.getElementById(<span class="string">&#x27;lblTimer&#x27;</span>).innerHTML = xhr.responseText;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>出现的原因：</p>
+<ul>
+<li>每次请求的地址都一样，浏览器自作聪明去使用了第一次请求的结果。</li>
+</ul>
+<p>解决方法</p>
+<ul>
+<li>
+<p>骗浏览器，让它以为 <code>每次的请求都不一样</code></p>
+</li>
+<li>
+<p><code>http://localhost:3005/common/getCurrentTime?_t=1559038330427</code></p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">&quot;btn&quot;</span>).onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  <span class="built_in">console</span>.log(xhr.readyState);</span><br><span class="line">  <span class="comment">// open 方法的第一个参数的作用就是设置请求的 method</span></span><br><span class="line">  <span class="keyword">var</span> time = <span class="built_in">Date</span>.now(); <span class="comment">// 附加一个变化的值</span></span><br><span class="line">  xhr.open(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;common/getCurrentTime?_t=&quot;</span> + time);</span><br><span class="line">  <span class="built_in">console</span>.log(xhr.readyState);</span><br><span class="line">  xhr.send();</span><br><span class="line">  <span class="comment">// 更改事件为onreadystatechange</span></span><br><span class="line">  xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 表示从服务器端返回的数据已经全部ok了。</span></span><br><span class="line">    <span class="keyword">if</span> (xhr.readyState == <span class="number">4</span>) &#123;</span><br><span class="line">      <span class="built_in">document</span>.getElementById(<span class="string">&quot;lblTimer&quot;</span>).innerHTML = xhr.responseText;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>以 <span class="exturl" data-url="aHR0cDovL2pkLmNvbQ==">jd.com</span> 为例 <code>loginservice.aspx</code></p>
+<h2 id="服务器端返回的数据格式"><a class="markdownIt-Anchor" href="#服务器端返回的数据格式">#</a> 服务器端返回的数据格式</h2>
+<p>前端人员通过 ajax 请求从服务器获取数据，数据拿回来之后，可能还需要做一步的操作，例如：如果是一个数组，则要遍历数组。</p>
+<p>那么掌握服务器返回的数据的表现形式是非常重要的环节，只有知道了这些格式，我们才能更好去处理这些数据。</p>
+<p>了解服务器端返回数据在类型上的区别；会对 json 进行操作；简单了解 xml；</p>
+<p>内容：</p>
+<ul>
+<li>观察三种不同的返回值</li>
+<li>深入学习 JSON</li>
+<li>简单学习 XML</li>
+</ul>
+<h3 id="了解三个不同结构的字符串"><a class="markdownIt-Anchor" href="#了解三个不同结构的字符串">#</a> 了解三个不同结构的字符串</h3>
+<p>引入：以 4 大名著书本信息为例，比较三种文件的回传的数据比较。</p>
+<ul>
+<li>文本：普通字符串</li>
+<li>json：json 格式的字符串</li>
+<li>xml：xml 格式的字符串</li>
+</ul>
+<p>直接在浏览器中打开三个接口，列出结果如下：</p>
+<ul>
+<li>格式 1：</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">作者：吴承恩，书名：西游记；作者：施耐庵，书名：水浒传；作者：罗贯中，书名：三国演义；作者：曹雪芹，书名：红楼梦</span><br></pre></td></tr></table></figure>
+<ul>
+<li>格式 2：</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123; <span class="attr">author</span>: <span class="string">&quot;吴承恩&quot;</span>, <span class="attr">name</span>: <span class="string">&quot;西游记&quot;</span> &#125;,</span><br><span class="line">  &#123; <span class="attr">author</span>: <span class="string">&quot;施耐庵&quot;</span>, <span class="attr">name</span>: <span class="string">&quot;水浒传&quot;</span> &#125;,</span><br><span class="line">  &#123; <span class="attr">author</span>: <span class="string">&quot;罗贯中&quot;</span>, <span class="attr">name</span>: <span class="string">&quot;三国演义&quot;</span> &#125;,</span><br><span class="line">  &#123; <span class="attr">author</span>: <span class="string">&quot;曹雪芹&quot;</span>, <span class="attr">name</span>: <span class="string">&quot;红楼梦&quot;</span> &#125;,</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+<ul>
+<li>格式 3</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">booklist</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">book</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">author</span>&gt;</span>吴承恩<span class="tag">&lt;/<span class="name">author</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>西游记<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">book</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">book</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">author</span>&gt;</span>施耐庵<span class="tag">&lt;/<span class="name">author</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>水浒传<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">book</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">book</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">author</span>&gt;</span>罗贯中<span class="tag">&lt;/<span class="name">author</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>三国演义<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">book</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">book</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">author</span>&gt;</span>曹雪芹<span class="tag">&lt;/<span class="name">author</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>红楼梦<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">book</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">booklist</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>哪一种格式的字符串更好读？为什么？</p>
+<blockquote>
+<p>Tip: 同样是作文，字迹字体也有工整之分。</p>
+</blockquote>
+<h3 id="json"><a class="markdownIt-Anchor" href="#json">#</a> JSON</h3>
+<p>发送 ajax 请求时，从服务器端返回的数据格式要统一，这样才能让不同的后端语言，不同的前端人员都 能读懂，都方便操作，而这时，我们就可以使用 JSON 格式。</p>
+<p>它用于描述数据，它比普通字符串更具有表达力！</p>
+<h4 id="如何判断返回值是-json-字符串"><a class="markdownIt-Anchor" href="#如何判断返回值是-json-字符串">#</a> 如何判断返回值是 JSON 字符串</h4>
+<p>观察几个真实的 JSON 数据：</p>
+<p>从服务器返回的数据都是字符串格式的，如何判断数据是 JSON 字符串格式的？</p>
+<p>[在线验证 json 格式](<span class="exturl" data-url="aHR0cDovL3d3dy5iZWpzb24uY29tLw==">http://www.bejson.com/</span>）</p>
+<blockquote>
+<p>tip: 直接在线进行字符串校验，判断一个字符串是不是 json 字符串。</p>
+</blockquote>
+<h4 id="json-是什么"><a class="markdownIt-Anchor" href="#json-是什么">#</a> JSON 是什么</h4>
+<p>JSON: JavaScript Object Notation (JavaScript 对象表示法) 。</p>
+<ul>
+<li>JSON 是一种通过普通<strong>字符串</strong>描述数据的手段，用于表示有结构的数据。</li>
+<li>JSON 是轻量级的文本数据交换格式，类似 XML。</li>
+<li>JSON  <code>独立于编程语言</code>  （php,java,go,js 都会通过它来进行数据交流）</li>
+<li>JSON 具有自我描述性，更易理解</li>
+</ul>
+<h4 id="json-字符串常见格式"><a class="markdownIt-Anchor" href="#json-字符串常见格式">#</a> JSON 字符串常见格式</h4>
+<p>作为前端人员，我们是通过调用服务器端接口的方式来获取 JSON 字符串，也就是说，我们一拿到数据，它是 JOSN 格式的，而这个 JSON 格式的数据显然是由后端同学给提供的。</p>
+<p>但是，我们也要知道如何去写出一个标准的 JSON 字符串。</p>
+<p>有如下三种情况：</p>
+<ul>
+<li>
+<p>普通字符串</p>
+</li>
+<li>
+<p>数组字符串</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]&#x27;</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>做法是：在 javascript 数组前后加上单引号，变成字符串就行。</p>
+<ul>
+<li>
+<p>对象字符串</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&#123;\&quot;name\&quot;:\&quot;curry\&quot;,\&quot;age\&quot;:40&#125;&quot;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>做法是：</p>
+<ol>
+<li>在 javascript 对象的属性名加上’双引号’（ <code>不能用单引号</code> ）;</li>
+<li>把整个对象前后加上单引号</li>
+</ol>
+<h4 id="json-字符串相关的两个操作"><a class="markdownIt-Anchor" href="#json-字符串相关的两个操作">#</a> JSON 字符串相关的两个操作</h4>
+<ul>
+<li>
+<ol>
+<li>把 JSON 字符串转成具体某个编程语言中的数据格式；</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>在某个编程语言中，把数据格式转成 JSON 字符串；</li>
+</ol>
+</li>
+</ul>
+<p>[外链图片转存失败，源站可能有防盗链机制，建议将图片保存下来直接上传 (img-deUUB9Z2-1581995138725)(ajax 讲义.assets/1559101747981.png)]</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>从 JSON 字符串转成编程语言支持的数据</th>
+<th>从数据类型转成 JSON 字符串</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>js</td>
+<td>JSON.parse()</td>
+<td>JSON.stringify()</td>
+</tr>
+<tr>
+<td>php</td>
+<td>json_decode()</td>
+<td>json_encode()</td>
+</tr>
+<tr>
+<td>java</td>
+<td>JSON.parseObject(),JSON.parseArray()</td>
+<td>JSON.toJSONString</td>
+</tr>
+</tbody>
+</table>
+<p>js 中提供了一个静态对象 JSON 来处理 json。 它与 Math 相似，不需要 new，而是直接通过对象名。方法来调用。</p>
+<h5 id="jsonstringify"><a class="markdownIt-Anchor" href="#jsonstringify">#</a> JSON.stringify</h5>
+<p>功能：把 js 数据，转成 JSON 格式的字符串</p>
+<p>格式： <code>var JSON字符串 = JSON.stringify(js数据)</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1.把js中的数组，对象 转成 JSON字符串</span></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="string">&quot;ok&quot;</span>, <span class="string">&quot;hello&quot;</span>];</span><br><span class="line"><span class="keyword">var</span> arr_jsonStr = <span class="built_in">JSON</span>.stringify(arr);</span><br><span class="line"><span class="built_in">console</span>.info(arr, <span class="keyword">typeof</span> arr);</span><br><span class="line"><span class="built_in">console</span>.info(arr_jsonStr, <span class="keyword">typeof</span> arr_jsonStr);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = &#123; <span class="attr">name</span>: <span class="string">&quot;flex&quot;</span>, <span class="attr">age</span>: <span class="number">30</span>, <span class="attr">favoriate</span>: [<span class="string">&quot;篮球&quot;</span>, <span class="string">&quot;前端&quot;</span>] &#125;;</span><br><span class="line"><span class="keyword">var</span> obj_jsonStr = <span class="built_in">JSON</span>.stringify(obj);</span><br><span class="line"><span class="built_in">console</span>.info(obj, <span class="keyword">typeof</span> obj);</span><br><span class="line"><span class="built_in">console</span>.info(obj_jsonStr, <span class="keyword">typeof</span> obj_jsonStr);</span><br></pre></td></tr></table></figure>
+<h5 id="jsonparse"><a class="markdownIt-Anchor" href="#jsonparse">#</a> JSON.parse</h5>
+<p>功能：把 JSON 格式的字符串，还原成 JS 中的数据格式</p>
+<p>格式： <code>var JS数据 = JSON.parse(JSON字符串)</code></p>
+<h4 id="案例把四大名著-json-字符串以表格的形式显示"><a class="markdownIt-Anchor" href="#案例把四大名著-json-字符串以表格的形式显示">#</a> 案例：把四大名著 json 字符串以表格的形式显示</h4>
+<h3 id="xml简单了解"><a class="markdownIt-Anchor" href="#xml简单了解">#</a> XML (简单了解)</h3>
+<p>可扩展标记语言（Extensible Markup Language）。</p>
+<ul>
+<li>
+<p>XML 于 1998 年 2 月 10 日成为 <span class="exturl" data-url="aHR0cHM6Ly9iYWlrZS5iYWlkdS5jb20vaXRlbS9XM0M=">W3C</span> 的推荐标准。</p>
+</li>
+<li>
+<p>它提供了一种描述结构数据的格式，简化了网络中<span class="exturl" data-url="aHR0cHM6Ly9iYWlrZS5iYWlkdS5jb20vaXRlbS8lRTYlOTUlQjAlRTYlOEQlQUUlRTQlQkElQTQlRTYlOEQlQTI=">数据交换</span>和表示，使得代码、数据和表示分离，并作为数据交换的标准格式。</p>
+</li>
+<li>
+<p>独立于编程语言的。</p>
+</li>
+<li>
+<p>AJAX（异步的 javascript 和 XML）中的 X 就是 XML</p>
+</li>
+</ul>
+<h4 id="示例"><a class="markdownIt-Anchor" href="#示例">#</a> 示例</h4>
+<p>假设这个文件的名字为 books.xml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;utf-8&quot; ?&gt;</span><br><span class="line">&lt;booklist&gt;</span><br><span class="line">&lt;book&gt;</span><br><span class="line">	&lt;author&gt;吴承恩&lt;&#x2F;author&gt;</span><br><span class="line">	&lt;name&gt;西游记&lt;&#x2F;name&gt;</span><br><span class="line">&lt;&#x2F;book&gt;</span><br><span class="line">&lt;book&gt;</span><br><span class="line">	&lt;author&gt;施耐庵&lt;&#x2F;author&gt;</span><br><span class="line">	&lt;name&gt;水浒传&lt;&#x2F;name&gt;</span><br><span class="line">&lt;&#x2F;book&gt;</span><br><span class="line">&lt;book&gt;</span><br><span class="line">	&lt;author&gt;罗贯中&lt;&#x2F;author&gt;</span><br><span class="line">	&lt;name&gt;三国演义&lt;&#x2F;name&gt;</span><br><span class="line">&lt;&#x2F;book&gt;</span><br><span class="line">&lt;book&gt;</span><br><span class="line">	&lt;author&gt;曹雪芹&lt;&#x2F;author&gt;</span><br><span class="line">	&lt;name&gt;红楼梦&lt;&#x2F;name&gt;</span><br><span class="line">&lt;&#x2F;book&gt;</span><br><span class="line">&lt;&#x2F;booklist&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="操作了解"><a class="markdownIt-Anchor" href="#操作了解">#</a> 操作（了解）</h4>
+<p>如果 ajax 所请求的接口，明确规定返回值是 xml 格式，你可以通过：</p>
+<ul>
+<li>
+<p>通过 xhr.responseXML 来获取内容。</p>
+</li>
+<li>
+<p>拿到这个内容之后，就像操作 dom 元素一样去访问其中的内容。</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> books = xhr.responseXML.getElementsByTagName(<span class="string">&quot;book&quot;</span>);</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> index = <span class="number">0</span>; index &lt; books.length; index++) &#123;</span><br><span class="line">  <span class="keyword">var</span> element = books[index];</span><br><span class="line">  <span class="built_in">console</span>.info(element.getElementsByTagName(<span class="string">&quot;author&quot;</span>)[<span class="number">0</span>].innerHTML);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="xml-vs-json"><a class="markdownIt-Anchor" href="#xml-vs-json">#</a> XML VS JSON</h3>
+<p>相同点：</p>
+<ul>
+<li>都用来 <code>描述数据格式</code></li>
+<li>与具体的 <code>编程语言无关</code></li>
+<li>有自己文件格式的后缀名.xml 和.json 的文件</li>
+</ul>
+<p>区别</p>
+<ul>
+<li>JSON 有简易的语法（javascript 基因）；XML 有规范的标签（html 基因）</li>
+<li>JSON 存储效率更高</li>
+</ul>
+<h2 id="同步和异步"><a class="markdownIt-Anchor" href="#同步和异步">#</a> 同步和异步</h2>
+<p>同步和异步是面试中经常会被问到的知识点，下面我们通过 ajax 来学习这个概念。</p>
+<p>内容：</p>
+<pre><code>- 对比生活中的例子理解 同步和异步
+- 简单代码认识异步的效果
+- ajax中的异步
+- ajax中的同步
+</code></pre>
+<h3 id="生活中的同步异步"><a class="markdownIt-Anchor" href="#生活中的同步异步">#</a> 生活中的同步异步</h3>
+<p>[外链图片转存失败，源站可能有防盗链机制，建议将图片保存下来直接上传 (img-uJBo8elU-1581995138729)(ajax 讲义.assets/1561249167046.png)]</p>
+<p>同步方式： 一个时刻只能做一件事；</p>
+<ul>
+<li>我： 写代码</li>
+<li>我：买咖啡，自己去买，花 2 小时</li>
+<li>我：写代码</li>
+</ul>
+<p>异步方式：不是一件接一件做，而是可能同时做多件事情；</p>
+<pre><code>- 我： 写代码
+- 我： 买咖啡，安排别人去买，跳过这一步，我自己不做。
+- 我： 写代码
+</code></pre>
+<h3 id="ajax-定义同步和异步"><a class="markdownIt-Anchor" href="#ajax-定义同步和异步">#</a> ajax 定义同步和异步</h3>
+<p>原生的 ajax 中，xhr.open () 方法的第三个参数就可以决定同步和异步的方式。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">xhr.open(参数<span class="number">1</span> ，参数<span class="number">2</span>，参数<span class="number">3</span>)</span><br><span class="line">- 参数<span class="number">1</span> ：请求的方式.  get，post</span><br><span class="line">- 参数<span class="number">2</span> ：请求的url地址。</span><br><span class="line">- 参数<span class="number">3</span> ：是否启用异步模式，默认为<span class="literal">true</span>，即异步， <span class="string">`如果设置为false，就是同步`</span>。</span><br></pre></td></tr></table></figure>
+<p>以请求黑盒服务器的接口 sleep 为例（这个接口已经预先写好了，直接调用即可）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建ajax，设置，并发送请求</span></span><br><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">xhr.open(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;common/sleep&quot;</span>); <span class="comment">// 第三个参数不写，默认是异步</span></span><br><span class="line">xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.info(<span class="string">&quot;现在的时间是：&quot;</span>, <span class="keyword">new</span> <span class="built_in">Date</span>().toLocaleTimeString());</span><br><span class="line">&#125;;</span><br><span class="line">xhr.send(); <span class="comment">// 发送。</span></span><br></pre></td></tr></table></figure>
+<p>改成 true 和 false 观察效果。</p>
+<h3 id="异步的-ajax"><a class="markdownIt-Anchor" href="#异步的-ajax">#</a> 异步的 ajax</h3>
+<p>xhr.open () 默认是异步的。通过下面的代码来理解异步。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 先输出一行提示代码</span></span><br><span class="line"><span class="built_in">console</span>.info(<span class="string">&quot;1  现在的时间是：&quot;</span>, <span class="keyword">new</span> <span class="built_in">Date</span>().toLocaleTimeString());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 创建ajax，设置，并发送请求</span></span><br><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">xhr.open(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;common/sleep&quot;</span>); <span class="comment">// 第三个参数不写，默认是异步</span></span><br><span class="line">xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.info(<span class="string">&quot;2 现在的时间是：&quot;</span>, <span class="keyword">new</span> <span class="built_in">Date</span>().toLocaleTimeString());</span><br><span class="line">&#125;;</span><br><span class="line">xhr.send(); <span class="comment">// 发送。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 3.再输出一行提示代码</span></span><br><span class="line"><span class="built_in">console</span>.info(<span class="string">&quot;3 现在的时间是：&quot;</span>, <span class="keyword">new</span> <span class="built_in">Date</span>().toLocaleTimeString());</span><br></pre></td></tr></table></figure>
+<p>异步执行流程：</p>
+<ul>
+<li>浏览器：输出 1</li>
+<li>浏览器：执行 send (), 发现是异步的，跳过这一步（不会阻塞代码，理解为：不用自己亲自做，找别人去做）</li>
+<li>浏览器：输出 3</li>
+</ul>
+<p>注意： <code>异步ajax时，onload，可以写在send之后</code></p>
+<h3 id="同步的-ajax"><a class="markdownIt-Anchor" href="#同步的-ajax">#</a> 同步的 ajax</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">xhr.open(参数<span class="number">1</span> ，参数<span class="number">2</span>，参数<span class="number">3</span>)</span><br><span class="line">- 参数<span class="number">1</span> ：请求的方式。 get，post</span><br><span class="line">- 参数<span class="number">2</span> ：请求的url地址。</span><br><span class="line">- 参数<span class="number">3</span> ：是否启用异步模式，默认为<span class="literal">true</span>，即异步， <span class="string">`如果设置为false，就是同步`</span>。</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">xhr.open(<span class="string">&#x27;get&#x27;</span>, <span class="string">&#x27;common/getCurrentTime&#x27;</span>);       <span class="comment">// 异步</span></span><br><span class="line">xhr.open(<span class="string">&#x27;get&#x27;</span>, <span class="string">&#x27;common/getCurrentTime&#x27;</span>，<span class="literal">true</span>); <span class="comment">// 异步</span></span><br><span class="line">xhr.open(<span class="string">&#x27;get&#x27;</span>, <span class="string">&#x27;common/getCurrentTime&#x27;</span>, <span class="literal">false</span>);<span class="comment">// 同步</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p>同步代码中，onload 必须写在 send 之前。</p>
+</li>
+<li>
+<p>同步执行流程：</p>
+<ul>
+<li>浏览器：输出 1</li>
+<li>浏览器：执行 send (), 发现是同步， <code>只能死等</code> 。 整个代码块卡在 send 这句。</li>
+<li>浏览器：输出 3</li>
+</ul>
+</li>
+</ul>
+<p>如果你设置成了同步的方式，你会在浏览器看到如下的错误信息：</p>
+<p><code>[Deprecation] Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/.</code></p>
+<p>有几个单词：</p>
+<ul>
+<li>
+<p>Synchronous: 同步的</p>
+</li>
+<li>
+<p>deprecate: 反对的，不赞成</p>
+</li>
+<li>
+<p>detrimental：有害的，不利的</p>
+</li>
+</ul>
+<p>翻译一下就是：[deprecation] 由于主线程上的同步 xmlhttpRequest 对最终用户的体验有不利影响，因此不推荐使用它。有关更多帮助，请查看 https://xhr.spec.whatwg.org/</p>
+<h2 id="原生-ajax-代码封装"><a class="markdownIt-Anchor" href="#原生-ajax-代码封装">#</a> 原生 ajax 代码封装</h2>
+<p>对前面学习的 get 请求有 4 步，post 请求有 5 步，下面对这些代码封装，以提高效率。</p>
+<p>封装代码的工作，我们可以从实现了某个具体功能的代码出发，例如前面用到的 <code>common/get</code>  请求的例子</p>
+<p>初始代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建ajax，设置，并发送请求</span></span><br><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">xhr.open(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;common/get?a=1&amp;b=2&quot;</span>);</span><br><span class="line">xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.info(<span class="string">&quot;现在的时间是：&quot;</span>, <span class="keyword">new</span> <span class="built_in">Date</span>().toLocaleTimeString());</span><br><span class="line">&#125;;</span><br><span class="line">xhr.send(); <span class="comment">// 发送。</span></span><br></pre></td></tr></table></figure>
+<h3 id="加括号变成一个函数"><a class="markdownIt-Anchor" href="#加括号变成一个函数">#</a> 加括号，变成一个函数</h3>
+<p>给取一个响应的名字 <code>hiAjax</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hiAjax</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 创建ajax，设置，并发送请求</span></span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xhr.open(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;common/get?a=1&amp;b=2&quot;</span>);</span><br><span class="line">  xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(xhr.responseText);</span><br><span class="line">  &#125;;</span><br><span class="line">  xhr.send(); <span class="comment">// 发送。</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">hiAjax();</span><br></pre></td></tr></table></figure>
+<h3 id="提炼出-type-参数"><a class="markdownIt-Anchor" href="#提炼出-type-参数">#</a> 提炼出 type 参数</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myAjax</span>(<span class="params">type</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xhr.open(type, <span class="string">&quot;common/get?a=1&amp;b=2&quot;</span>);</span><br><span class="line">  xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(xhr.responseText);</span><br><span class="line">  &#125;;</span><br><span class="line">  xhr.send();</span><br><span class="line">&#125;</span><br><span class="line">myAjax(<span class="string">&quot;get&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="提炼出-url-和-data"><a class="markdownIt-Anchor" href="#提炼出-url-和-data">#</a> 提炼出 url 和 data</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myAjax</span>(<span class="params">type, url, data</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  <span class="keyword">if</span> (data) &#123;</span><br><span class="line">    url += <span class="string">&quot;?&quot;</span> + data;</span><br><span class="line">  &#125;</span><br><span class="line">  xhr.open(type, url);</span><br><span class="line">  xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(xhr.responseText);</span><br><span class="line">  &#125;;</span><br><span class="line">  xhr.send();</span><br><span class="line">&#125;</span><br><span class="line">myAjax(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;common/get&quot;</span>, <span class="string">&quot;a=1&amp;b=2&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="处理-post-请求"><a class="markdownIt-Anchor" href="#处理-post-请求">#</a> 处理 post 请求</h3>
+<p>第一步：直接通过 if,else 进行两类的处理</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myAjax</span>(<span class="params">type, url, data</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (type == <span class="string">&quot;post&quot;</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    xhr.open(type, url);</span><br><span class="line">    xhr.setRequestHeader(<span class="string">&quot;Content-type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line">    xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(xhr.responseText);</span><br><span class="line">    &#125;;</span><br><span class="line">    xhr.send(data);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (type == <span class="string">&quot;get&quot;</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    <span class="keyword">if</span> (data) &#123;</span><br><span class="line">      url += <span class="string">&quot;?&quot;</span> + data;</span><br><span class="line">    &#125;</span><br><span class="line">    xhr.open(type, url);</span><br><span class="line">    xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(xhr.responseText);</span><br><span class="line">    &#125;;</span><br><span class="line">    xhr.send();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">myAjax(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;common/get&quot;</span>, <span class="string">&quot;a=1&amp;b=2&quot;</span>);</span><br><span class="line">myAjax(<span class="string">&quot;post&quot;</span>, <span class="string">&quot;common/post&quot;</span>, <span class="string">&quot;a=1&amp;b=2&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>第二步：优化代码</p>
+<p>把 if,else 中的相同的代码提出来</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myAjax</span>(<span class="params">type, url, data</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (type == <span class="string">&quot;get&quot;</span> &amp;&amp; data) &#123;</span><br><span class="line">    url += <span class="string">&quot;?&quot;</span> + data;</span><br><span class="line">  &#125;</span><br><span class="line">  xhr.open(type, url);</span><br><span class="line">  xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(xhr.responseText);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (type == <span class="string">&quot;post&quot;</span>) &#123;</span><br><span class="line">    xhr.setRequestHeader(<span class="string">&quot;Content-type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line">    xhr.send(data);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (type == <span class="string">&quot;get&quot;</span>) &#123;</span><br><span class="line">    xhr.send();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">myAjax(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;common/get&quot;</span>, <span class="string">&quot;a=1&amp;b=2&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="支持回调函数"><a class="markdownIt-Anchor" href="#支持回调函数">#</a> 支持回调函数</h3>
+<ul>
+<li>全局函数</li>
+<li>函数传参</li>
+</ul>
+<p>代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">       * 功能 ： 发出ajax请求</span></span><br><span class="line"><span class="comment">       * 参数：</span></span><br><span class="line"><span class="comment">       *    type: 类型是字符串。支持的取值是 &quot;get&quot;,&quot;post&quot;。决定ajax请求的类型</span></span><br><span class="line"><span class="comment">       *    data: 传给服务器的数据。支持的格式是字符串：a=1&amp;b=2&amp;c=3</span></span><br><span class="line"><span class="comment">       *    url : 请求的地址,</span></span><br><span class="line"><span class="comment">       *    sucess: 请求成功之后的回调函数。第一个参数是服务器返回的数据</span></span><br><span class="line"><span class="comment">       *</span></span><br><span class="line"><span class="comment">       * 示例：</span></span><br><span class="line"><span class="comment">          hiAjax(&#x27;get&#x27;, &#x27;name=ok&#x27;, &#x27;common/get&#x27;, function(result) &#123;</span></span><br><span class="line"><span class="comment">              console.info(&#x27;get&#x27;, result);</span></span><br><span class="line"><span class="comment">          &#125;);</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">          hiAjax(&#x27;get&#x27;, &#x27;   &#x27;, &#x27;common/get&#x27;,dosomething1);</span></span><br><span class="line"><span class="comment">          hiAjax(&#x27;get&#x27;, &#x27;&#x27;, &#x27;common/get&#x27;,dosomething2);</span></span><br><span class="line"><span class="comment">       */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hiAjax</span>(<span class="params">type, data, url, success</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (type === <span class="string">&quot;post&quot;</span>) &#123;</span><br><span class="line">    xhr.open(type, url);</span><br><span class="line">    xhr.setRequestHeader(<span class="string">&quot;content-type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line">    xhr.send(data);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (type === <span class="string">&quot;get&quot;</span>) &#123;</span><br><span class="line">    <span class="comment">//如果 data有值，就在url后追加</span></span><br><span class="line">    <span class="comment">// trim() 用来清除字符串前后的空格</span></span><br><span class="line">    <span class="keyword">if</span> (data.trim()) &#123;</span><br><span class="line">      url = url + <span class="string">&quot;?&quot;</span> + data;</span><br><span class="line">    &#125;</span><br><span class="line">    xhr.open(type, url);</span><br><span class="line">    xhr.send();</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    alert(<span class="string">&quot;不支持这个格式的请求:&quot;</span> + type);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    success(xhr.responseText);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dosomething1</span>(<span class="params">result</span>) </span>&#123;</span><br><span class="line">  alert(<span class="string">&quot;1&quot;</span>);</span><br><span class="line">  <span class="built_in">console</span>.info(xhr.responseText);</span><br><span class="line">  <span class="comment">// alert(1);</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dosomething2</span>(<span class="params">result</span>) </span>&#123;</span><br><span class="line">  alert(<span class="string">&quot;2&quot;</span>);</span><br><span class="line">  <span class="built_in">console</span>.info(xhr.responseText);</span><br><span class="line">  <span class="comment">// alert(1);</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 每个请求，从服务器中返回数据之后，都是直接在控制台中输出。</span></span><br><span class="line"><span class="comment">// hiAjax(&#x27;post&#x27;, &#x27;a=1&amp;b=2&#x27;, &#x27;common/post&#x27;, dosomething1);</span></span><br><span class="line">hiAjax(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;name=ok&quot;</span>, <span class="string">&quot;common/get&quot;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">result</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.info(<span class="string">&quot;get&quot;</span>, result);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">hiAjax(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;   &quot;</span>, <span class="string">&quot;common/get&quot;</span>, dosomething1);</span><br><span class="line">hiAjax(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="string">&quot;common/get&quot;</span>, dosomething2);</span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a class="markdownIt-Anchor" href="#总结">#</a> 总结</h3>
+<p>封装的基本过程：</p>
+<ol>
+<li><code>埋头苦干</code>  。写出基本的，能正确运行的代码段</li>
+<li><code>一名惊人</code> 。使用 function 包裹，变成一个可以被调用的函数；</li>
+<li><code>从死到活</code> 。从具体到抽象。函数内部的固定数据抽成参数，同时写函数文档。</li>
+<li><code>黑盒测试</code> 。列出多维度的测试用例，逐一验证。</li>
+<li><code>升级优化</code>
+<ul>
+<li>目前 data 这个参数只是查询字符串的格式，是否可让它支持对象格式？</li>
+</ul>
+</li>
+</ol>
+<h2 id="其它-ajax-库的使用"><a class="markdownIt-Anchor" href="#其它-ajax-库的使用">#</a> 其它 ajax 库的使用</h2>
+<h3 id="jquery-中的-ajax-方法"><a class="markdownIt-Anchor" href="#jquery-中的-ajax-方法">#</a> jquery 中的 ajax 方法</h3>
+<h4 id="ajax-的其它选项"><a class="markdownIt-Anchor" href="#ajax-的其它选项">#</a> $.ajax 的其它选项</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$.ajax(url,&#123;</span><br><span class="line">  type: &#39;get&#39;,</span><br><span class="line">  dataType: &#39;json&#39;,</span><br><span class="line">  data: &#123; id: 1 &#125;,</span><br><span class="line">  beforeSend: function (xhr) &#123;</span><br><span class="line">    console.log(&#39;before send&#39;)</span><br><span class="line">  &#125;,</span><br><span class="line">  success: function (data) &#123;</span><br><span class="line">    console.log(data)</span><br><span class="line">  &#125;,</span><br><span class="line">  error: function (xhr) &#123;</span><br><span class="line">    console.log(xhr)</span><br><span class="line">  &#125;,</span><br><span class="line">  complete: function (xhr) &#123;</span><br><span class="line">    console.log(&#39;request completed&#39;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>常用选项参数介绍：</p>
+<ul>
+<li>
+<p>url：请求地址</p>
+</li>
+<li>
+<p>type /method：请求方法，默认为  <code>get</code></p>
+</li>
+<li>
+<p>data：需要传递到服务端的数据。字符串和对象均可。如果是对象会自动拼接成字符串</p>
+</li>
+<li>
+<p>success：请求成功之后触发</p>
+</li>
+<li>
+<p>cache: 设置 ie 浏览器的缓存问题。默认为 true，表示缓存。 cache: false 不缓存。</p>
+<p>[外链图片转存失败，源站可能有防盗链机制，建议将图片保存下来直接上传 (img-RXPLp7KP-1581995138732)(ajax 讲义.assets/1559188688467.png)]</p>
+</li>
+<li>
+<p>dataType：预期服务端返回的数据方式。如不指定，它会自动判断。</p>
+</li>
+<li>
+<p>contentType：请求体内容方式，默认  <code>application/x-www-form-urlencoded</code></p>
+</li>
+<li>
+<p>timeout：请求超时时间。</p>
+</li>
+<li>
+<p>beforeSend：请求发起之前触发</p>
+</li>
+<li>
+<p>complete：请求完成触发（不管成功与否）</p>
+</li>
+<li>
+<p>error：请求失败触发</p>
+</li>
+<li>
+<p>processData:boolean。是否让 jquery 帮助处理传到服务器的数据</p>
+</li>
+</ul>
+<h4 id="ajax-方法的简便用法"><a class="markdownIt-Anchor" href="#ajax-方法的简便用法">#</a> $.ajax 方法的简便用法</h4>
+<ul>
+<li>$.get()</li>
+<li>$.post()</li>
+<li>$.getJSON()</li>
+</ul>
+<h5 id="get-的格式"><a class="markdownIt-Anchor" href="#get-的格式">#</a> $.get 的格式</h5>
+<p>对于比较简单的 get 请求，jquery 提供了一个快捷方法 $.get ()</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$.get(url,[,data][,success]);</span><br><span class="line">参数：</span><br><span class="line"> - url     ：字符串方式。指要请求的 URL 地址。</span><br><span class="line"> - data    : js对象，或者字符串方式。 可选的。 指发请求带给服务器的信息。</span><br><span class="line"> - success : <span class="function"><span class="keyword">function</span>(<span class="params">result</span>)</span>&#123;&#125; 。 可选的。它是一个回调函数，当请求成功时被自动调用，它的第一个参数是从服务器返回的数据。</span><br></pre></td></tr></table></figure>
+<h5 id="post-的格式"><a class="markdownIt-Anchor" href="#post-的格式">#</a> $.post 的格式</h5>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$.post(url,[,data][,success]);</span><br><span class="line">参数：</span><br><span class="line">- url     ：字符串方式。指要请求的 URL 地址。</span><br><span class="line">- data    : js对象，或者字符串方式。 可选的。 指发请求带给服务器的信息。</span><br><span class="line">- success : function(result)&#123;&#125; 。 可选的。它是一个回调函数，当请求成功时被自动调用，它的第一个参数是从服务器返回的数据。</span><br></pre></td></tr></table></figure>
+<h5 id="getjson"><a class="markdownIt-Anchor" href="#getjson">#</a> $.getJSON</h5>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$.getJSON(url,[,data][,success]);</span><br><span class="line">参数：</span><br><span class="line"> - url     ：字符串方式。指要请求的 URL 地址。</span><br><span class="line"> - data    : js对象，或者字符串方式。 可选的。 指发请求带给服务器的信息。</span><br><span class="line"> - success : <span class="function"><span class="keyword">function</span>(<span class="params">json</span>)</span>&#123;&#125; 。它是一个回调函数，当请求成功时被自动调用，它的参数是从服务器返回的<span class="built_in">JSON</span>数据。</span><br></pre></td></tr></table></figure>
+<h3 id="axios-库"><a class="markdownIt-Anchor" href="#axios-库">#</a> axios 库</h3>
+<p>jquery 中封装了 ajax 功能，但是它的体积比较大。如果我们只希望使用 ajax 功能，而不需要 dom 操作的话，我们可以选择使用 axios 库。(fetch)</p>
+<p>应用：</p>
+<pre><code>- 它只专注于处理http请求，比jquery的体积小的多，适用于只需要ajax请求的业务场景；
+- 后期学习三大前端框架时也会用到；
+</code></pre>
+<h4 id="使用示例"><a class="markdownIt-Anchor" href="#使用示例">#</a> 使用示例</h4>
+<p>通过官网查看其使用方法。</p>
+<p>与 jquery 一样，要使用它，必须先引入这个文件。然后就可以按如下的格式去使用了。</p>
+<p>中文网站：&lt;<span class="exturl" data-url="aHR0cDovL3d3dy5heGlvcy1qcy5jb20vemgtY24vZG9jcy8=">http://www.axios-js.com/zh-cn/docs/</span></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取服务器的返回值</span></span><br><span class="line">axios.get(<span class="string">&quot;/common/get?id=123&quot;</span>).then(<span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// res 就是本次请求的信息</span></span><br><span class="line">  <span class="built_in">console</span>.info(res);</span><br><span class="line">  <span class="comment">// 获取 从服务器返回的数据</span></span><br><span class="line">  <span class="built_in">console</span>.info(res.data);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">axios</span><br><span class="line">  .get(<span class="string">&quot;/common/get&quot;</span>, &#123; <span class="attr">params</span>: &#123; <span class="attr">id</span>: <span class="number">123</span>, <span class="attr">name</span>: <span class="string">&quot;jake&quot;</span> &#125; &#125;)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// res 就是本次请求的信息</span></span><br><span class="line">    <span class="built_in">console</span>.info(res);</span><br><span class="line">    <span class="comment">// 获取 从服务器返回的数据</span></span><br><span class="line">    <span class="built_in">console</span>.info(res.data);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// post请求，不带参数</span></span><br><span class="line">axios.post(<span class="string">&quot;/common/post&quot;</span>).then(<span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.info(res.data);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// post请求，带参数</span></span><br><span class="line">axios.post(<span class="string">&quot;/common/post&quot;</span>, &#123; <span class="attr">id</span>: <span class="number">123</span>, <span class="attr">name</span>: <span class="string">&quot;jake&quot;</span> &#125;).then(<span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.info(res.data);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="是什么"><a class="markdownIt-Anchor" href="#是什么">#</a> 是什么</h4>
+<p>​ Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js 中。相比 jquery 它只专注于 ajax 请求。</p>
+<ul>
+<li>特性
+<ul>
+<li>从浏览器中创建 <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIubW96aWxsYS5vcmcvZW4tVVMvZG9jcy9XZWIvQVBJL1hNTEh0dHBSZXF1ZXN0">XMLHttpRequests</span></li>
+<li>从 node.js 创建 <span class="exturl" data-url="aHR0cDovL25vZGVqcy5vcmcvYXBpL2h0dHAuaHRtbA==">http</span> 请求</li>
+<li>支持 <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIubW96aWxsYS5vcmcvZW4tVVMvZG9jcy9XZWIvSmF2YVNjcmlwdC9SZWZlcmVuY2UvR2xvYmFsX09iamVjdHMvUHJvbWlzZQ==">Promise</span> API</li>
+<li>拦截请求和响应</li>
+<li>转换请求数据和响应数据</li>
+<li>取消请求</li>
+<li>自动转换 JSON 数据</li>
+<li>客户端支持防御 <span class="exturl" data-url="aHR0cDovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9Dcm9zcy1zaXRlX3JlcXVlc3RfZm9yZ2VyeQ==">XSRF</span></li>
+</ul>
+</li>
+</ul>
+<h2 id="xmlhttprequest-20"><a class="markdownIt-Anchor" href="#xmlhttprequest-20">#</a> XMLHttpRequest 2.0</h2>
+<p>XMLHttpRequest 2.0（2012 年）中的新增功能一些功能我们重点给大家介绍如下两个内容：</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly94aHIuc3BlYy53aGF0d2cub3JnLw==">https://xhr.spec.whatwg.org/</span></p>
+<ul>
+<li>responseType</li>
+<li>FormData</li>
+</ul>
+<h3 id="responsetype-response"><a class="markdownIt-Anchor" href="#responsetype-response">#</a> responseType / response</h3>
+<p>responseType：响应类型。表示对从服务器端回来数据的期待，即我们希望从服务器回来的数据是什么类型的。</p>
+<h4 id="使用场景"><a class="markdownIt-Anchor" href="#使用场景">#</a> 使用场景</h4>
+<p>在前面使用原生的 ajax 过程中，我们提到了从服务器端获取的数据一般从 xhr.responseText 中获取，而这个值一般情况下是一个 json 字符串，所以我们要使用 JSON.parse () 来转一下这个字符串。</p>
+<p>但是，如果 <code>已经确切地知道</code> 了从服务器端回来的数据格式是 JSON 字符串，那么我们在发出 ajax 请求之前，提前去设置 xhr.responseType 属性值，这样得到的数据就可以直接从 xhr.response 中拿了。</p>
+<p>如果你已经能够知道从服务器中返回的数据类型，就可以通过:</p>
+<ol>
+<li>预先设置 xhr.responseType = “类型名”</li>
+<li>直接从 xhr.response 中拿结果</li>
+</ol>
+<h4 id="基本介绍"><a class="markdownIt-Anchor" href="#基本介绍">#</a> 基本介绍</h4>
+<ul>
+<li>responseType – 预期服务器返回数据的类型
+<ul>
+<li>“” – 空，表示文本，和 text 一样。空为默认值</li>
+<li>text – 文本</li>
+<li>json – JSON 格式数据</li>
+<li>document – 文档对象</li>
+</ul>
+</li>
+<li>response – 根据 responseType 的值自动处理返回结果，可以接收任何类型的结果</li>
+</ul>
+<h4 id="示例-2"><a class="markdownIt-Anchor" href="#示例-2">#</a> 示例</h4>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">xhr.open(<span class="string">&quot;get&quot;</span>, <span class="string">&quot;common/get?id=123&amp;name=jake&quot;</span>);</span><br><span class="line">xhr.send();</span><br><span class="line">xhr.responseType = <span class="string">&quot;json&quot;</span>;</span><br><span class="line">xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// responseText</span></span><br><span class="line">  <span class="comment">// 只有当responseType是&quot;&quot; 或者是&quot;text&quot;时才只可以使用；</span></span><br><span class="line">  <span class="comment">// console.info(typeof xhr.responseText);</span></span><br><span class="line">  <span class="comment">// console.info(JSON.parse(xhr.responseText));</span></span><br><span class="line">  <span class="built_in">console</span>.info(<span class="keyword">typeof</span> xhr.response);</span><br><span class="line">  <span class="built_in">console</span>.info(xhr.response);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>不需要再次对 xhr.responseText 进行转换</li>
+<li>不能再使用 xhr.responseText，会报错。应该使用 xhr.response</li>
+</ul>
+<h3 id="formdata"><a class="markdownIt-Anchor" href="#formdata">#</a> FormData</h3>
+<p>FormData：表单数据（<span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIubW96aWxsYS5vcmcvemgtQ04vZG9jcy9XZWIvQVBJL0Zvcm1EYXRh">官方 api 参考</span>）。故名思义，它是用来处理 html 中与表单数据相关的操作的。</p>
+<p>在 ajax 的使用过程， 一般先要收集用户的信息，然后再把信息通过 post（或者 get）的方式传递到后端。FormData 的使用就是在收集用户信息这个部分。</p>
+<p>它主要有如下两个使用场景：</p>
+<ul>
+<li>快速收集 form 表单中元素的信息，减少表单元素的拼接，提高工作效率</li>
+<li>上传文件</li>
+</ul>
+<h4 id="快速获取表单中的元素值"><a class="markdownIt-Anchor" href="#快速获取表单中的元素值">#</a> 快速获取表单中的元素值</h4>
+<p>静态页面代码</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">&quot;myform&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">&quot;&quot;</span>&gt;</span>姓名<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">id</span>=<span class="string">&quot;userName&quot;</span> <span class="attr">name</span>=<span class="string">&quot;userName&quot;</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">&quot;&quot;</span>&gt;</span>密码<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;password&quot;</span> <span class="attr">id</span>=<span class="string">&quot;userPassword&quot;</span> <span class="attr">name</span>=<span class="string">&quot;userPassword&quot;</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">&quot;&quot;</span>&gt;</span>性别<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;radio&quot;</span> <span class="attr">id</span>=<span class="string">&quot;genderMale&quot;</span> <span class="attr">name</span>=<span class="string">&quot;userGender&quot;</span> <span class="attr">value</span>=<span class="string">&quot;male&quot;</span> /&gt;</span>男</span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;radio&quot;</span> <span class="attr">id</span>=<span class="string">&quot;genderFemale&quot;</span> <span class="attr">name</span>=<span class="string">&quot;userGender&quot;</span> <span class="attr">value</span>=<span class="string">&quot;female&quot;</span> /&gt;</span>女</span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">&quot;btn&quot;</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span>&gt;</span>注册<span class="tag">&lt;/<span class="name">button</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h5 id="不用-formdata"><a class="markdownIt-Anchor" href="#不用-formdata">#</a> 不用 FormData</h5>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">&quot;btn&quot;</span>).onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">//收集用户信息</span></span><br><span class="line">  <span class="keyword">var</span> userName = <span class="built_in">document</span>.getElementById(<span class="string">&quot;userName&quot;</span>).value;</span><br><span class="line">  <span class="keyword">var</span> userPassword = <span class="built_in">document</span>.getElementById(<span class="string">&quot;userPassword&quot;</span>).value;</span><br><span class="line">  <span class="keyword">var</span> userGender = <span class="string">&quot;&quot;</span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">document</span>.getElementById(<span class="string">&quot;genderMale&quot;</span>).checked) &#123;</span><br><span class="line">    userGender = <span class="string">&quot;male&quot;</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">document</span>.getElementById(<span class="string">&quot;genderFemale&quot;</span>).checked) &#123;</span><br><span class="line">    userGender = <span class="string">&quot;famale&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">console</span>.info(userName, userPassword, userGender);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 通过post传值</span></span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xhr.responseType = <span class="string">&quot;json&quot;</span>;</span><br><span class="line">  xhr.open(<span class="string">&quot;post&quot;</span>, <span class="string">&quot;common/post&quot;</span>);</span><br><span class="line">  xhr.setRequestHeader(<span class="string">&quot;Content-type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line">  xhr.send(</span><br><span class="line">    <span class="string">`userName=<span class="subst">$&#123;userName&#125;</span>&amp;userPassword=<span class="subst">$&#123;userPassword&#125;</span>&amp;userGender=<span class="subst">$&#123;userGender&#125;</span>`</span></span><br><span class="line">  );</span><br><span class="line">  xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.info(xhr.response);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="使用-formdata"><a class="markdownIt-Anchor" href="#使用-formdata">#</a> 使用 FormData</h5>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">&quot;btn&quot;</span>).onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">//收集用户信息</span></span><br><span class="line">  <span class="keyword">var</span> fd = <span class="keyword">new</span> FormData(<span class="built_in">document</span>.getElementById(<span class="string">&quot;myform&quot;</span>));</span><br><span class="line">  <span class="comment">// 通过post传值</span></span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xhr.responseType = <span class="string">&quot;json&quot;</span>;</span><br><span class="line">  xhr.open(<span class="string">&quot;post&quot;</span>, <span class="string">&quot;common/post&quot;</span>);</span><br><span class="line">  <span class="comment">// 不用设置请求头</span></span><br><span class="line">  <span class="comment">// xhr.setRequestHeader(</span></span><br><span class="line">  <span class="comment">//   &#x27;Content-type&#x27;,</span></span><br><span class="line">  <span class="comment">//   &#x27;application/x-www-form-urlencoded&#x27;</span></span><br><span class="line">  <span class="comment">// );</span></span><br><span class="line">  xhr.send(fd);</span><br><span class="line">  xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.info(xhr.response);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>要注意：</p>
+<ul>
+<li>FormData 对象内部有一个键值对集合，其中的键名就是表单元素的 name 属性名，而值就是这个表单元素当前的值。</li>
+</ul>
+<h4 id="formdata-对象的-api"><a class="markdownIt-Anchor" href="#formdata-对象的-api">#</a> FormData 对象的 api</h4>
+<p><span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIubW96aWxsYS5vcmcvemgtQ04vZG9jcy9XZWIvQVBJL0Zvcm1EYXRh">https://developer.mozilla.org/zh-CN/docs/Web/API/FormData</span></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fd = <span class="keyword">new</span> Formdata();</span><br><span class="line">fd.append(key, value);</span><br><span class="line"><span class="comment">// 向 FormData 中添加新的属性值，如果FormData 对应的属性值存在则覆盖原值，否则新增一项属性值。</span></span><br><span class="line">fd.delete(key);</span><br><span class="line"><span class="comment">// 从 FormData 对象里面删除一个键值对。</span></span><br><span class="line">fd.entries();</span><br><span class="line"><span class="comment">// 返回一个包含所有键值对的iterator对象。</span></span><br><span class="line">fd.get(key);</span><br><span class="line"><span class="comment">//返回在 FormData 对象中与给定键关联的第一个值。</span></span><br><span class="line">fd.getAll(key);</span><br><span class="line"><span class="comment">//返回一个包含 FormData 对象中与给定键关联的所有值的数组。</span></span><br><span class="line">fd.has(key);</span><br><span class="line"><span class="comment">//返回一个布尔值表明 FormData 对象是否包含某些键。</span></span><br><span class="line">fd.keys();</span><br><span class="line"><span class="comment">//返回一个包含所有键的iterator对象。</span></span><br><span class="line">fd.set(key, value);</span><br><span class="line"><span class="comment">//给 FormData 设置属性值，如果FormData 对应的属性值存在则覆盖原值，否则新增一项属性值。</span></span><br><span class="line">fd.values();</span><br><span class="line"><span class="comment">//返回一个包含所有值的iterator对象。</span></span><br></pre></td></tr></table></figure>
+<h4 id="自定义键值对"><a class="markdownIt-Anchor" href="#自定义键值对">#</a> 自定义键值对</h4>
+<p>上面的案例中，我们是从表单中快速获取所有的表单元素的值，并以键值的形式保存在 FormDate 对象中。除了这种方法之外，还可以手动决定收集哪些值，或者额外添加哪些值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//   使用FormData</span></span><br><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">&quot;btn&quot;</span>).onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">//收集用户信息</span></span><br><span class="line">  <span class="keyword">var</span> fd = <span class="keyword">new</span> FormData();</span><br><span class="line">  <span class="comment">// 数据在FormData内部是以键-值对的格式存在的.</span></span><br><span class="line">  <span class="comment">// 获取：值</span></span><br><span class="line">  <span class="comment">// 格式： fd.get(键名 )</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 向fd中追加一个键值对</span></span><br><span class="line">  fd.append(<span class="string">&quot;userName&quot;</span>, <span class="built_in">document</span>.getElementById(<span class="string">&quot;userName&quot;</span>).value);</span><br><span class="line">  fd.append(<span class="string">&quot;userPassword&quot;</span>, <span class="built_in">document</span>.getElementById(<span class="string">&quot;userPassword&quot;</span>).value);</span><br><span class="line">  <span class="keyword">var</span> userGender = <span class="string">&quot;&quot;</span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">document</span>.getElementById(<span class="string">&quot;genderMale&quot;</span>).checked) &#123;</span><br><span class="line">    userGender = <span class="string">&quot;male&quot;</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">document</span>.getElementById(<span class="string">&quot;genderFemale&quot;</span>).checked) &#123;</span><br><span class="line">    userGender = <span class="string">&quot;famale&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  fd.append(<span class="string">&quot;userGender&quot;</span>, userGender);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//console.info(fd.get(&#x27;email&#x27;));</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 通过post传值</span></span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xhr.responseType = <span class="string">&quot;json&quot;</span>;</span><br><span class="line">  xhr.open(<span class="string">&quot;post&quot;</span>, <span class="string">&quot;common/post&quot;</span>);</span><br><span class="line">  <span class="comment">// 不用设置请求头</span></span><br><span class="line">  <span class="comment">// xhr.setRequestHeader(</span></span><br><span class="line">  <span class="comment">//   &#x27;Content-type&#x27;,</span></span><br><span class="line">  <span class="comment">//   &#x27;application/x-www-form-urlencoded&#x27;</span></span><br><span class="line">  <span class="comment">// );</span></span><br><span class="line">  xhr.send(fd);</span><br><span class="line">  xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.info(xhr.response);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="简单上传文件"><a class="markdownIt-Anchor" href="#简单上传文件">#</a> 简单上传文件</h4>
+<p>在浏览器端，文件上传功能可以通过很简单的代码就能实现，而复杂的地方在服务器端。黑盒服务器已经预制了一个接口，可以用来上传文件。接口名地址是： <code>formdata/upload</code></p>
+<p>使用这个接口有两点注意：</p>
+<ul>
+<li>
+<p>这个接口只能接收 formdata 对象，并且你上传的文件信息必须是保存在名为 <code>file</code>  的键中。也就是说 input 的 name 值必须是 file 。</p>
+</li>
+<li>
+<p>app.exe 的同级目录下必须有 <code>upload</code>  文件夹。这个文件夹就是用来保存上传的文件的。</p>
+</li>
+</ul>
+<p>核心代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;container&quot;</span>&gt;</span><br><span class="line">      &lt;h1&gt;FormData文件上传&lt;/h1&gt;</span><br><span class="line">      &lt;form id=<span class="string">&quot;myForm&quot;</span>&gt;</span><br><span class="line">        &lt;label <span class="keyword">for</span>=<span class="string">&quot;&quot;</span>&gt;请选择你要上传的文件&lt;/label&gt;</span><br><span class="line">        &lt;input type=<span class="string">&quot;file&quot;</span> name=<span class="string">&quot;file&quot;</span> /&gt;</span><br><span class="line">      &lt;/form&gt;</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;button id=<span class="string">&quot;btn&quot;</span>&gt;上传&lt;/button&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line"></span><br><span class="line">    &lt;script&gt;</span><br><span class="line">      <span class="built_in">document</span>.getElementById(<span class="string">&#x27;btn&#x27;</span>).onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> fd = <span class="keyword">new</span> FormData(<span class="built_in">document</span>.getElementById(<span class="string">&#x27;myForm&#x27;</span>));</span><br><span class="line">        <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">        xhr.open(<span class="string">&#x27;post&#x27;</span>, <span class="string">&#x27;formdata/upload&#x27;</span>);</span><br><span class="line">        xhr.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">          <span class="built_in">console</span>.info(xhr.responseText);</span><br><span class="line">        &#125;;</span><br><span class="line">        xhr.send(fd);</span><br><span class="line">      &#125;;</span><br><span class="line">    &lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="上传文件进度条-onprogress"><a class="markdownIt-Anchor" href="#上传文件进度条-onprogress">#</a> 上传文件进度条 onprogress</h4>
+<p>这个案例是在上一个案例的基础上进行拓展：让上传文件的过程可视化。</p>
+<p>核心：</p>
+<ul>
+<li>xhr 对象中有一个子对象 upload，upload 对象中有一个事件 onprogress。</li>
+<li>onprogress 事件大约每 100ms 触发一次，其回调函数第一个参数是一个事件对象，这个事件对象中有两个属性 loaded 和 total
+<ul>
+<li>loaded：表示已上传文件的大小</li>
+<li>total： 表示文件总大小</li>
+</ul>
+</li>
+</ul>
+<p>实现思路：</p>
+<ul>
+<li>
+<p>制作进度条，使用两层嵌套的 div 即可：第一层是进度条的外边框，第二层才是进度条</p>
+</li>
+<li>
+<p>每次 onprogress 事件触发时：</p>
+<ul>
+<li>都计算当前已上传文件大小的百分比</li>
+<li>根据百分比去重绘进度条长度（宽度值可以是百分比值）</li>
+</ul>
+</li>
+</ul>
+<p>参考资料：静态页面中的样式</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.outer &#123; height: 20px; background: #171b3c; border-radius: 20px; box-shadow: 0</span><br><span class="line">2px 2px #4f4c4c; margin-bottom: 40px; position: relative; &#125; .inner &#123; position:</span><br><span class="line">absolute; border-radius: 20px; width: 0%; height: 20px; background: #ef2d56; &#125;</span><br></pre></td></tr></table></figure>
+<p>参考资料：核心代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">&quot;btn&quot;</span>).onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> innerDom = <span class="built_in">document</span>.getElementById(<span class="string">&quot;inner&quot;</span>);</span><br><span class="line">  <span class="keyword">var</span> fd = <span class="keyword">new</span> FormData(<span class="built_in">document</span>.getElementById(<span class="string">&quot;myForm&quot;</span>));</span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xhr.open(<span class="string">&quot;post&quot;</span>, <span class="string">&quot;formdata/upload&quot;</span>);</span><br><span class="line">  xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.info(xhr.responseText);</span><br><span class="line">  &#125;;</span><br><span class="line">  xhr.upload.onprogress = <span class="function"><span class="keyword">function</span> (<span class="params">ev</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.info(<span class="built_in">Date</span>.now());</span><br><span class="line">    <span class="comment">// 已上传 / 总大小</span></span><br><span class="line">    <span class="built_in">console</span>.info((ev.loaded / ev.total) * <span class="number">100</span> + <span class="string">&quot;%&quot;</span>);</span><br><span class="line">    <span class="comment">// 设置百分比值</span></span><br><span class="line">    innerDom.style.width = (ev.loaded / ev.total) * <span class="number">100</span> + <span class="string">&quot;%&quot;</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">  xhr.send(fd);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="综合案例-会员管理"><a class="markdownIt-Anchor" href="#综合案例-会员管理">#</a> 综合案例 - 会员管理</h2>
+<p>目标：实现一个相对复杂的功能</p>
+<ul>
+<li>会实现无限加载</li>
+<li>会用 $.ajax 发 ajax 请求</li>
+<li>会用 postman</li>
+</ul>
+<p>内容</p>
+<ul>
+<li>项目整体介绍</li>
+<li>postman 使用</li>
+<li>项目实现</li>
+</ul>
+<h3 id="基本介绍-2"><a class="markdownIt-Anchor" href="#基本介绍-2">#</a> 基本介绍</h3>
+<h4 id="项目功能介绍"><a class="markdownIt-Anchor" href="#项目功能介绍">#</a> 项目功能介绍</h4>
+<ul>
+<li>添加会员</li>
+<li>删除会员</li>
+<li>查看会员列表</li>
+<li>查看会员详情</li>
+<li>会员列表（无限加载）</li>
+</ul>
+<h4 id="项目的开发要点"><a class="markdownIt-Anchor" href="#项目的开发要点">#</a> 项目的开发要点</h4>
+<ul>
+<li>前后端分离开发</li>
+<li>前端使用 bootstrap+ jquery</li>
+<li>使用 <code>postman</code>  对接口进行测试</li>
+<li>后端准备好相关接口以供前端调用</li>
+</ul>
+<h4 id="项目接口列表"><a class="markdownIt-Anchor" href="#项目接口列表">#</a> 项目接口列表</h4>
+<ul>
+<li>list</li>
+<li>list-last</li>
+<li>detail</li>
+<li>delete</li>
+<li>add</li>
+</ul>
+<h5 id="接口名list"><a class="markdownIt-Anchor" href="#接口名list">#</a> 接口名：list</h5>
+<p>url: /member/list</p>
+<p>功能：取出全部会员信息</p>
+<p>类型: get</p>
+<p>参数：无</p>
+<p>返回值：取到的记录列表</p>
+<h5 id="接口名list-last"><a class="markdownIt-Anchor" href="#接口名list-last">#</a> 接口名：list-last</h5>
+<p>url: /member/list-last</p>
+<p>功能：取出从当前记录（last）之后的 6 条记录</p>
+<p>类型: get</p>
+<p>参数：</p>
+<p>​ - last: 指定的从哪条记录（id 号）开始取 。如果不设置值，就取最新的 6 个成员</p>
+<p>返回值：取到的记录列表</p>
+<p>示例：  <code>member/list-last?last=100</code>  。获取编号为 100 之后的 6 条数据</p>
+<h5 id="接口名detail"><a class="markdownIt-Anchor" href="#接口名detail">#</a> 接口名：detail</h5>
+<p>url: /member/detail</p>
+<p>功能：获取指定编号的会员详情</p>
+<p>类型: get</p>
+<p>参数：</p>
+<p>​ - id: 会员的编号。必传。</p>
+<p>返回值：会员详情。</p>
+<h5 id="接口名delete"><a class="markdownIt-Anchor" href="#接口名delete">#</a> 接口名：delete</h5>
+<p>url: /member/delete</p>
+<p>功能：删除指定编号的会员</p>
+<p>类型: post</p>
+<p>参数：</p>
+<p>​ - id: 会员的编号。必传</p>
+<p>返回值：无</p>
+<h5 id="接口名add"><a class="markdownIt-Anchor" href="#接口名add">#</a> 接口名：add</h5>
+<p>url: /member/add</p>
+<p>功能：添加会员</p>
+<p>类型: post</p>
+<p>参数：</p>
+<pre><code>- name: 名字
+- avatar: 头像文件，是一个图片文件
+- bio: 介绍
+</code></pre>
+<p>返回值：{}</p>
+<p>注意： <code>必须要确保在public下面有一个upload文件夹</code></p>
+<h3 id="postman"><a class="markdownIt-Anchor" href="#postman">#</a> postman</h3>
+<p>对于 get 类型的接口，我们可以直接在地址栏中输入地址去发请求，对于 post 请求，测试起来就不方便了。这种情况下，我们就需要专业的接口测试工具了，这里给大家推荐 postman。</p>
+<ul>
+<li>对后端提供的接口进行测试；</li>
+<li>前端必备工具；</li>
+</ul>
+<p>基本操作</p>
+<ol>
+<li>下载，安装</li>
+<li>启动</li>
+<li>测试接口</li>
+</ol>
+<p>要点：</p>
+<ul>
+<li>
+<p>选择参数</p>
+<p>[外链图片转存失败，源站可能有防盗链机制，建议将图片保存下来直接上传 (img-2lksBzee-1581995138736)(ajax 讲义.assets/1561186856276.png)]</p>
+</li>
+</ul>
+<h4 id="查看会员详细信息"><a class="markdownIt-Anchor" href="#查看会员详细信息">#</a> 查看会员详细信息</h4>
+<ul>
+<li>整体分析
+<ul>
+<li>流程分析</li>
+<li>接口测试</li>
+</ul>
+</li>
+<li>从 url 中取值</li>
+<li>发送请求，更新页面元素</li>
+</ul>
+<h4 id="删除会员"><a class="markdownIt-Anchor" href="#删除会员">#</a> 删除会员</h4>
+<p>思路：</p>
+<ul>
+<li>给每个删除链接上，补充成员 id。</li>
+<li>给每个删除链接上，补充’href=“javascript:;”’，这样可以阻止默认的跳转事件。</li>
+<li>给弹出框中的删除按钮添加点击事件
+<ul>
+<li>获取上面的 label 中的 id。</li>
+<li>发 ajax 请求，进行删除</li>
+</ul>
+</li>
+</ul>
+<p>重点代码：</p>
+<ol>
+<li>取消 a 标签的跳转动作</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;javascirpt:;&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>
+<p>添加事件委托</p>
+<p>问题描述：元素是动态生成的，无法直接给元素添加点击事件。解决方法：给其父元素添加事件监听。由于元素上的事件具有冒泡特性：在子元素上的点击事件最终也会冒泡到父元素上。所以可以直接在父元素上监听。</p>
+</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">&quot;#parent&quot;</span>).on(<span class="string">&quot;click&quot;</span>, <span class="string">&quot;.son&quot;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ....</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="新增会员"><a class="markdownIt-Anchor" href="#新增会员">#</a> 新增会员</h4>
+<ul>
+<li>
+<p>文件控件</p>
+</li>
+<li>
+<p>本地图片预览</p>
+</li>
+<li>
+<p>整体实现</p>
+</li>
+</ul>
+<h5 id="表单中的文件控件"><a class="markdownIt-Anchor" href="#表单中的文件控件">#</a> 表单中的文件控件</h5>
+<ul>
+<li>multiple: 是否可以多选</li>
+<li>accept: 设置默认筛选的格式</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">multiple</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p>设置只显示图片</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 只允许看到jpeg图片</span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;image/jpeg&quot;</span> /&gt;</span></span><br><span class="line">// 只允许看到png图片</span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;.png&quot;</span> /&gt;</span></span><br><span class="line">// 允许所有的图片</span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;image/*&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>其它类型</p>
+<table>
+<thead>
+<tr>
+<th><strong>文件类型</strong></th>
+<th><strong>accept 属性值</strong></th>
+<th><strong>类型</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*.3gpp</td>
+<td>audio/3gpp, video/3gpp</td>
+<td>3GPP Audio/Video</td>
+</tr>
+<tr>
+<td>*.ac3</td>
+<td>audio/ac3</td>
+<td>AC3 Audio</td>
+</tr>
+<tr>
+<td>*.asf</td>
+<td>allpication/vnd.ms-asf</td>
+<td>Advanced Streaming Format</td>
+</tr>
+<tr>
+<td>*.au</td>
+<td>audio/basic</td>
+<td>AU Audio</td>
+</tr>
+<tr>
+<td>*.css</td>
+<td>text/css</td>
+<td>Cascading Style Sheets</td>
+</tr>
+<tr>
+<td>*.csv</td>
+<td>text/csv</td>
+<td>Comma Separated Values</td>
+</tr>
+<tr>
+<td>*.doc</td>
+<td>application/msword</td>
+<td>MS Word Document</td>
+</tr>
+<tr>
+<td>*.dot</td>
+<td>application/msword</td>
+<td>MS Word Template</td>
+</tr>
+<tr>
+<td>*.dtd</td>
+<td>application/xml-dtd</td>
+<td>Document Type Definition</td>
+</tr>
+<tr>
+<td>*.dwg</td>
+<td>image/vnd.dwg</td>
+<td>AutoCAD Drawing Database</td>
+</tr>
+<tr>
+<td>*.dxf</td>
+<td>image/vnd.dxf</td>
+<td>AutoCAD Drawing Interchange Format</td>
+</tr>
+<tr>
+<td>*.gif</td>
+<td>image/gif</td>
+<td>Graphic Interchange Format</td>
+</tr>
+<tr>
+<td>*.htm</td>
+<td>text/html</td>
+<td>HyperText Markup Language</td>
+</tr>
+<tr>
+<td>*.html</td>
+<td>text/html</td>
+<td>HyperText Markup Language</td>
+</tr>
+<tr>
+<td>*.jp2</td>
+<td>image/jp2</td>
+<td>JPEG-2000</td>
+</tr>
+<tr>
+<td>*.jpe</td>
+<td>image/jpeg</td>
+<td>JPEG</td>
+</tr>
+<tr>
+<td>*.jpeg</td>
+<td>image/jpeg</td>
+<td>JPEG</td>
+</tr>
+<tr>
+<td>*.jpg</td>
+<td>image/jpeg</td>
+<td>JPEG</td>
+</tr>
+<tr>
+<td>*.js</td>
+<td>text/javascript, application/javascript</td>
+<td>JavaScript</td>
+</tr>
+<tr>
+<td>*.json</td>
+<td>application/json</td>
+<td>JavaScript Object Notation</td>
+</tr>
+<tr>
+<td>*.mp2</td>
+<td>audio/mpeg, video/mpeg</td>
+<td>MPEG Audio/Video Stream, Layer II</td>
+</tr>
+<tr>
+<td>*.mp3</td>
+<td>audio/mpeg</td>
+<td>MPEG Audio Stream, Layer III</td>
+</tr>
+<tr>
+<td>*.mp4</td>
+<td>audio/mp4, video/mp4</td>
+<td>MPEG-4 Audio/Video</td>
+</tr>
+<tr>
+<td>*.mpeg</td>
+<td>video/mpeg</td>
+<td>MPEG Video Stream, Layer II</td>
+</tr>
+<tr>
+<td>*.mpg</td>
+<td>video/mpeg</td>
+<td>MPEG Video Stream, Layer II</td>
+</tr>
+<tr>
+<td>*.mpp</td>
+<td>application/vnd.ms-project</td>
+<td>MS Project Project</td>
+</tr>
+<tr>
+<td>*.ogg</td>
+<td>application/ogg, audio/ogg</td>
+<td>Ogg Vorbis</td>
+</tr>
+<tr>
+<td>*.pdf</td>
+<td>application/pdf</td>
+<td>Portable Document Format</td>
+</tr>
+<tr>
+<td>*.png</td>
+<td>image/png</td>
+<td>Portable Network Graphics</td>
+</tr>
+<tr>
+<td>*.pot</td>
+<td>application/vnd.ms-powerpoint</td>
+<td>MS PowerPoint Template</td>
+</tr>
+<tr>
+<td>*.pps</td>
+<td>application/vnd.ms-powerpoint</td>
+<td>MS PowerPoint Slideshow</td>
+</tr>
+<tr>
+<td>*.ppt</td>
+<td>application/vnd.ms-powerpoint</td>
+<td>MS PowerPoint Presentation</td>
+</tr>
+<tr>
+<td>*.rtf</td>
+<td>application/rtf, text/rtf</td>
+<td>Rich Text Format</td>
+</tr>
+<tr>
+<td>*.svf</td>
+<td>image/vnd.svf</td>
+<td>Simple Vector Format</td>
+</tr>
+<tr>
+<td>*.tif</td>
+<td>image/tiff</td>
+<td>Tagged Image Format File</td>
+</tr>
+<tr>
+<td>*.tiff</td>
+<td>image/tiff</td>
+<td>Tagged Image Format File</td>
+</tr>
+<tr>
+<td>*.txt</td>
+<td>text/plain</td>
+<td>Plain Text</td>
+</tr>
+<tr>
+<td>*.wdb</td>
+<td>application/vnd.ms-works</td>
+<td>MS Works Database</td>
+</tr>
+<tr>
+<td>*.wps</td>
+<td>application/vnd.ms-works</td>
+<td>Works Text Document</td>
+</tr>
+<tr>
+<td>*.xhtml</td>
+<td>application/xhtml+xml</td>
+<td>Extensible HyperText Markup Language</td>
+</tr>
+<tr>
+<td>*.xlc</td>
+<td>application/vnd.ms-excel</td>
+<td>MS Excel Chart</td>
+</tr>
+<tr>
+<td>*.xlm</td>
+<td>application/vnd.ms-excel</td>
+<td>MS Excel Macro</td>
+</tr>
+<tr>
+<td>*.xls</td>
+<td>application/vnd.ms-excel</td>
+<td>MS Excel Spreadsheet</td>
+</tr>
+<tr>
+<td>*.xlt</td>
+<td>application/vnd.ms-excel</td>
+<td>MS Excel Template</td>
+</tr>
+<tr>
+<td>*.xlw</td>
+<td>application/vnd.ms-excel</td>
+<td>MS Excel Workspace</td>
+</tr>
+<tr>
+<td>*.xml</td>
+<td>text/xml, application/xml</td>
+<td>Extensible Markup Language</td>
+</tr>
+<tr>
+<td>*.zip</td>
+<td>application/zip</td>
+<td>Compressed Archive</td>
+</tr>
+</tbody>
+</table>
+<h5 id="本地图片预览"><a class="markdownIt-Anchor" href="#本地图片预览">#</a> 本地图片预览</h5>
+<p>html5 本地预览</p>
+<p>文件控件选中图片后，文件控件中会保存图片信息它的 files 属性中。files 属性是一个数组，如果只选中了一张图片，这张图片就放在 files [0] 中，如选了多张图片，则类似后推。</p>
+<p>对于这些文件信息（本例中的文件就是用户选中的图片），我们通过 <code>window.URL.createObjectURL()</code>  来创建一个临时的路径，这个路径可能是像这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">blob:http:<span class="comment">//localhost:3005/fc517910-1300-44f3-a6e8-d52f56f34e4e</span></span><br></pre></td></tr></table></figure>
+<p>你可以通过打一个新的浏览器窗口，并在地址栏中输入这个路径来访问这张图片。注意，它只是临时的，如果你关闭了选中图片的网页，这张图片也将会不可访问。</p>
+<p>现在，我们拿到这个临时的 url 赋值给某一个 img 标签的 src 即可。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// input_avatar就是file控件的内容发生变化执行</span></span><br><span class="line">$(<span class="string">&quot;#input_avatar&quot;</span>).change(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// console.log(&#x27;xxx&#x27;);</span></span><br><span class="line">  <span class="comment">// 如果没有选择文件，返回</span></span><br><span class="line">  <span class="keyword">if</span> (!<span class="built_in">this</span>.files[<span class="number">0</span>]) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> url = URL.createObjectURL(<span class="built_in">this</span>.files[<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 设置图片的src</span></span><br><span class="line">  $(<span class="string">&quot;#avatar&quot;</span>).attr(<span class="string">&quot;src&quot;</span>, url);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h5 id="上传功能开发"><a class="markdownIt-Anchor" href="#上传功能开发">#</a> 上传功能开发</h5>
+<p>这里的上传不是一个简单的 post 请求，它其中包含了文件的上传，在技术选型上我们选择了 html5 中的 FormData，并使用 jquery 中的 ajax 方法来实现上传操作。</p>
+<p>这里要注意两点：</p>
+<ol>
+<li>processData:false</li>
+</ol>
+<p>不需要 jquery 去处理上传数据</p>
+<ol start="2">
+<li>contentType:false</li>
+</ol>
+<p>jquery 会自动给 post 请求设置请求头，content-type:‘application-x-www-’。这种做法在大多数情况下，都是对的，但是，如果提交的数据是 formdata，就不需要去设置了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 2. 添加会员</span></span><br><span class="line"><span class="comment">// 2.1 给按钮注册事件  注意，这个是提交按钮</span></span><br><span class="line">$(<span class="string">&quot;#btn_add&quot;</span>).click(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 2.2 获取用户输入的内容，还有用户选择的文件</span></span><br><span class="line">  <span class="comment">// 2.3 FormData  设置请求体，可以提交二进制数据，可以上传文件</span></span><br><span class="line">  <span class="comment">//     xhr.send(formData);</span></span><br><span class="line">  <span class="keyword">var</span> fd = <span class="keyword">new</span> FormData($(<span class="string">&quot;#myform&quot;</span>)[<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 2.4 发送请求，添加数据</span></span><br><span class="line">  $.ajax(&#123;</span><br><span class="line">    type: <span class="string">&quot;post&quot;</span>,</span><br><span class="line">    url: <span class="string">&quot;/member/add&quot;</span>,</span><br><span class="line">    data: fd,</span><br><span class="line">    processData: <span class="literal">false</span>,</span><br><span class="line">    <span class="comment">// 不设置content-type，而是当设置了formdata上传文件的时候，xhr对象会自动把content-type设置为multipart/form-data;</span></span><br><span class="line">    contentType: <span class="literal">false</span>,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 判断添加是否成功...</span></span><br><span class="line">      <span class="comment">// 2.5 跳转回首页</span></span><br><span class="line">      location.href = <span class="string">&quot;/&quot;</span>;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 取消默认行为，不进行表单提交</span></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>案例 3：在 jquery 中使用 FormData</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=<span class="string">&quot;./jquery-1.8.1.js&quot;</span>&gt;&lt;/script&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    $(<span class="string">&#x27;#btn&#x27;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 收集用户信息</span></span><br><span class="line">    <span class="comment">// var fd = new FormData(document.getElementById(&#x27;myForm&#x27;));</span></span><br><span class="line">    <span class="comment">// FormData(必须是一个dom元素) （1）</span></span><br><span class="line">    <span class="keyword">var</span> fd = <span class="keyword">new</span> FormData($(<span class="string">&#x27;#myForm&#x27;</span>)[<span class="number">0</span>]);</span><br><span class="line">    <span class="built_in">console</span>.info(fd);</span><br><span class="line">    <span class="built_in">console</span>.info(fd.get(<span class="string">&#x27;userPassword&#x27;</span>));</span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        url: <span class="string">&#x27;common/post&#x27;</span>,</span><br><span class="line">        type: <span class="string">&#x27;post&#x27;</span>,</span><br><span class="line">        data: fd,</span><br><span class="line">        processData: <span class="literal">false</span>, <span class="comment">// 不需要jquery去处理数据。 （2）</span></span><br><span class="line">        contentType: <span class="literal">false</span>, <span class="comment">// 不需要默认的contentType，而采用FormData自己的 （3）</span></span><br><span class="line">        success: <span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.info(res);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>注意：以上三个地方。</p>
+<h4 id="加载更多"><a class="markdownIt-Anchor" href="#加载更多">#</a> 加载更多</h4>
+<ul>
+<li>
+<p>测试接口</p>
+</li>
+<li>
+<p>分析加载数据的时机</p>
+</li>
+<li>
+<p>基本完成</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">全局变量来记录最大的last值</span><br><span class="line">&#x2F;&#x2F; 注册滚动的事件</span><br><span class="line">$(window).scroll(function () &#123;</span><br><span class="line">   &#x2F;&#x2F; 判断当前是否正在加载数据，如果正在加载数据，就不要再次发送请求了</span><br><span class="line">   if (loading) return;</span><br><span class="line">   &#x2F;&#x2F; 获取文档的高度</span><br><span class="line">  var documentH &#x3D; $(document).height();</span><br><span class="line">  &#x2F;&#x2F; 获取浏览器窗口的高度</span><br><span class="line">  var windowH &#x3D; $(window).height();</span><br><span class="line">  &#x2F;&#x2F; 文档滚动出去的距离</span><br><span class="line">  var scrollTop &#x3D; $(document).scrollTop();</span><br><span class="line">  &#x2F;&#x2F; 判断当前滚动条距离底部的距离是否 &lt;&#x3D; 100，加载更多数据</span><br><span class="line">  if (documentH - windowH - scrollTop &lt;&#x3D; 100) &#123;</span><br><span class="line">    &#x2F;&#x2F; 加载更多</span><br><span class="line">    loadData();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>优化</p>
+<ul>
+<li>不要重复发请求</li>
+<li>loading 效果</li>
+<li>数据全部加载完成之后的处理</li>
+</ul>
+</li>
+</ul>
+<h3 id="模板引擎"><a class="markdownIt-Anchor" href="#模板引擎">#</a> 模板引擎</h3>
+<p>目标：</p>
+<ul>
+<li>理解模板引擎的作用；</li>
+<li>会用模板引擎；</li>
+</ul>
+<h4 id="作用-2"><a class="markdownIt-Anchor" href="#作用-2">#</a> 作用</h4>
+<p>​ 把数据生成页面，这个过程叫渲染。</p>
+<p>[外链图片转存失败，源站可能有防盗链机制，建议将图片保存下来直接上传 (img-SUJ5N7ko-1581995138737)(D:\prepare\fanyoufu\01-ajax\ 笔记 \ 讲义.assets\1558772178540.png)]</p>
+<p>如果数据结构简单，可以直接通过字符串操作（拼接）的方式处理，但是如果数据过于复杂，字符串拼接维护成本太大，就不太适用，此时就可以使用模板引擎。模板引擎内部支持循环，选择，判断等高级的功能。</p>
+<blockquote>
+<p>模板引擎：</p>
+<ul>
+<li>artTemplate：<span class="exturl" data-url="aHR0cHM6Ly9hdWkuZ2l0aHViLmlvL2FydC10ZW1wbGF0ZS8=">https://aui.github.io/art-template/</span></li>
+<li>中文教程：<span class="exturl" data-url="aHR0cDovL3d3dy5qcTIyLmNvbS9qcXVlcnktaW5mbzEwOTc=">http://www.jq22.com/jquery-info1097</span></li>
+</ul>
+</blockquote>
+<p>模板引擎实际上就是一个 API，模板引擎有很多种，使用方式大同小异，目的是更容易更高效地将数据渲染到 HTML 字符串中。</p>
+<h4 id="使用模板引擎步骤"><a class="markdownIt-Anchor" href="#使用模板引擎步骤">#</a> 使用模板引擎步骤</h4>
+<ol>
+<li>引入 template-web.js 文件</li>
+<li>定义模板（具体语法可以去官网查看），指定 script 的 id 和 type 属性</li>
+<li>准备数据。(变量，数组等)</li>
+<li>调用 template 函数，为模板分配数据，template 函数有两个参数一个返回值
+<ol>
+<li>参数 1：模板的 id</li>
+<li>参数 2：分配的数据，必须是一个 JS 对象的形式</li>
+<li>一个返回值：是数据和模板标签组合好的结果</li>
+</ol>
+</li>
+<li>将 “拼接” 好的结果放回 dom 容量中</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;content&quot;</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 准备一个存放数据的位置 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 1. 引入template-web.js --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;/template-web.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 2. 定义模板（注意script标签的id和type必须指定） --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">id</span>=<span class="string">&quot;test&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text/html&quot;</span>&gt;</span></span><br><span class="line"><span class="handlebars"><span class="xml">  <span class="tag">&lt;<span class="name">h2</span>&gt;</span></span><span class="template-variable">&#123;&#123;<span class="name">data</span>&#125;&#125;</span><span class="xml"><span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="comment">// 3. 替换模板</span></span></span><br><span class="line"><span class="javascript">  <span class="comment">// test对应上面script标签的id</span></span></span><br><span class="line"><span class="javascript">  <span class="comment">// data对应上面script标签中使用的$data</span></span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> html = template(<span class="string">&quot;test&quot;</span>, &#123;</span></span><br><span class="line"><span class="javascript">    data: <span class="string">&quot;hello world&quot;</span>,</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="comment">// 4. 将替换好的html放到指定位置</span></span></span><br><span class="line"><span class="javascript">  <span class="built_in">document</span>.getElementById(<span class="string">&quot;content&quot;</span>).innerHTML = html;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意：</p>
+<ul>
+<li>定义模板时的 script 标签一定好指定 id 和 type</li>
+<li>tempalte 函数语法： <code>var html = template(模板id, Object)</code></li>
+</ul>
+<h4 id="模板语法"><a class="markdownIt-Anchor" href="#模板语法">#</a> 模板语法</h4>
+<h5 id="输出普通数据字符串数值"><a class="markdownIt-Anchor" href="#输出普通数据字符串数值">#</a> 输出普通数据（字符串，数值）</h5>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 模块写法</span><br><span class="line">&#123;&#123; var &#125;&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; template 函数写法</span><br><span class="line">var html &#x3D; template(&#39;id&#39;, &#123;</span><br><span class="line">	var： &#39;hello world&#39;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h5 id="条件"><a class="markdownIt-Anchor" href="#条件">#</a> 条件</h5>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模板写法</span></span><br><span class="line">&#123;&#123;<span class="keyword">if</span> age &gt; <span class="number">18</span>&#125;&#125;</span><br><span class="line">	大于<span class="number">18</span></span><br><span class="line">&#123;&#123;<span class="keyword">else</span>&#125;&#125;</span><br><span class="line">	小于<span class="number">18</span></span><br><span class="line">&#123;&#123;/<span class="keyword">if</span>&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// template函数写法</span></span><br><span class="line"><span class="keyword">var</span> html = template(<span class="string">&#x27;id&#x27;</span>, &#123;</span><br><span class="line">    age: <span class="number">20</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h5 id="循环"><a class="markdownIt-Anchor" href="#循环">#</a> 循环</h5>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 模板写法1</span><br><span class="line">&#123;&#123;each arr&#125;&#125;</span><br><span class="line">	&#123;&#123;$index&#125;&#125; -- 数组的下标</span><br><span class="line">	&#123;&#123;$value&#125;&#125; -- 数组的值</span><br><span class="line">&#123;&#123;&#x2F;each&#125;&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 模板写法1</span><br><span class="line">&#123;&#123;each arr item idx&#125;&#125;</span><br><span class="line">	&#123;&#123;idx&#125;&#125; -- 数组的下标</span><br><span class="line">	&#123;&#123;item&#125;&#125; -- 数组的值</span><br><span class="line">&#123;&#123;&#x2F;each&#125;&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; template函数写法</span><br><span class="line">var html &#x3D; template(&#39;id&#39;, &#123;</span><br><span class="line">    arr: [&#39;apple&#39;, &#39;banana&#39;, &#39;orange&#39;]</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+      <div class="tags">
+          <a href="/tags/about/" rel="tag"><i class="ic i-tag"></i> about</a>
+      </div>
+  </div>
+
+   <footer>
+
+    <div class="meta">
+  <span class="item">
+    <span class="icon">
+      <i class="ic i-calendar-check"></i>
+    </span>
+    <span class="text">Edited on</span>
+    <time title="Modified: 2020-11-23 15:42:10" itemprop="dateModified" datetime="2020-11-23T15:42:10+08:00">2020-11-23</time>
+  </span>
+</div>
+
+      
+<div class="reward">
+  <button><i class="ic i-heartbeat"></i> Donate</button>
+  <p>Give me a cup of [coffee]~(￣▽￣)~*</p>
+  <div id="qr">
+      
+      <div>
+        <img data-src="/images/wechatpay.png" alt=" WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div>
+        <img data-src="/images/alipay.png" alt=" Alipay">
+        <p>Alipay</p>
+      </div>
+      
+      <div>
+        <img data-src="/images/paypal.png" alt=" PayPal">
+        <p>PayPal</p>
+      </div>
+  </div>
+</div>
+
+      
+
+<div id="copyright">
+<ul>
+  <li class="author">
+    <strong>Post author:  </strong> <i class="ic i-at"><em>@</em></i>
+  </li>
+  <li class="link">
+    <strong>Post link: </strong>
+    <a href="http://example.com/2020/11/23/Ajax%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/" title="Ajax运行原理">http://example.com/2020/11/23/Ajax运行机制/</a>
+  </li>
+  <li class="license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="ic i-creative-commons"><em>(CC)</em></i>BY-NC-SA</span> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+  </footer>
+
+</article>
+
+  </div>
+  
+
+<div class="post-nav">
+    <div class="item left">
+      
+
+  <a href="/2020/08/13/computer-science/note/theme-shoka-doc/special/" itemprop="url" rel="prev" data-background-image="https:&#x2F;&#x2F;tva2.sinaimg.cn&#x2F;mw690&#x2F;6833939bly1gipevuctzzj20zk0m84qp.jpg" title="Step.4 主题特殊功能">
+  <span class="type">Previous Post</span>
+  <span class="category"><i class="ic i-flag"></i> Theme Shoka Documentation</span>
+  <h3>Step.4 主题特殊功能</h3>
+  </a>
+
+    </div>
+    <div class="item right">
+      
+
+  <a href="/2020/11/23/ie%E5%85%BC%E5%AE%B9%E6%80%A7%E9%97%AE%E9%A2%98/" itemprop="url" rel="next" data-background-image="https:&#x2F;&#x2F;tva2.sinaimg.cn&#x2F;mw690&#x2F;6833939bly1giclimtf7dj20zk0m8qav.jpg" title="Ie兼容性问题">
+  <span class="type">Next Post</span>
+  <span class="category"><i class="ic i-flag"></i> </span>
+  <h3>Ie兼容性问题</h3>
+  </a>
+
+    </div>
+</div>
+
+  
+  <div class="wrap" id="comments"></div>
+
+
+        </div>
+        <div id="sidebar">
+          
+
+<div class="inner">
+
+  <div class="panels">
+    <div class="inner">
+      <div class="contents panel pjax" data-title="Contents">
+          <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ajax"><span class="toc-number">1.</span> <span class="toc-text"> AJAX</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">1.1.</span> <span class="toc-text"> 服务器与客户端</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8server"><span class="toc-number">1.1.1.</span> <span class="toc-text"> 服务器（server）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8"><span class="toc-number">1.1.1.1.</span> <span class="toc-text"> 作用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">1.1.1.2.</span> <span class="toc-text"> 服务器的分类</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AFclient"><span class="toc-number">1.1.2.</span> <span class="toc-text"> 客户端（client)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE-web-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">1.1.3.</span> <span class="toc-text"> 访问 web 服务器的基本流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%95%86%E5%9C%BA%E4%B9%B0%E7%94%B5%E8%84%91%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="toc-number">1.1.3.1.</span> <span class="toc-text"> 商场买电脑的过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE-web-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">1.1.3.2.</span> <span class="toc-text"> 访问 web 服务器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E8%99%9A%E6%8B%9F-web-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">1.1.4.</span> <span class="toc-text"> 本地虚拟 web 服务器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D%E9%BB%91%E7%9B%92%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">1.1.4.1.</span> <span class="toc-text"> 介绍黑盒服务器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ajax-%E6%8A%80%E6%9C%AF%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="toc-number">1.1.5.</span> <span class="toc-text"> AJAX 技术的好处</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87-network-%E9%9D%A2%E6%9D%BF%E6%9D%A5%E8%A7%82%E5%AF%9F-ajax"><span class="toc-number">1.1.6.</span> <span class="toc-text"> 通过 network 面板来观察 AJAX</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ajax-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.1.7.</span> <span class="toc-text"> ajax 是什么</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-jquery-%E6%8F%90%E4%BE%9B%E7%9A%84-ajax-%E5%8A%9F%E8%83%BD"><span class="toc-number">1.2.</span> <span class="toc-text"> 使用 jQuery 提供的 AJAX 功能</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#jquery-%E4%BD%93%E9%AA%8C-ajax"><span class="toc-number">1.2.1.</span> <span class="toc-text"> jquery 体验 ajax</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ajax%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.2.1.1.</span> <span class="toc-text"> $.ajax () 的基本格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0callback-functions"><span class="toc-number">1.2.1.2.</span> <span class="toc-text"> 回调函数 (Callback Functions)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%A6%E5%8F%82%E6%95%B0%E7%9A%84-get-%E8%AF%B7%E6%B1%82"><span class="toc-number">1.2.2.</span> <span class="toc-text"> 带参数的 get 请求</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E5%90%8D%E6%A3%80%E6%B5%8B"><span class="toc-number">1.2.2.1.</span> <span class="toc-text"> 用户名检测</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#jquery-ajax-post"><span class="toc-number">1.2.3.</span> <span class="toc-text"> jquery-ajax-post</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E4%B8%A4%E7%A7%8D%E8%AF%B7%E6%B1%82%E6%96%B9%E5%BC%8F-get-post"><span class="toc-number">1.3.</span> <span class="toc-text"> 常见的两种请求方式 get-post</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E9%9D%A2%E7%90%86%E8%A7%A3"><span class="toc-number">1.3.1.</span> <span class="toc-text"> 字面理解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E6%93%8D%E5%AF%B9%E6%AF%94"><span class="toc-number">1.3.2.</span> <span class="toc-text"> 实操对比</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.3.3.</span> <span class="toc-text"> 常用场景</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jqueryajax-%E5%AE%9E%E7%8E%B0%E7%95%99%E8%A8%80%E6%9D%BF"><span class="toc-number">1.4.</span> <span class="toc-text"> JQuery.ajax 实现留言板</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E7%95%99%E8%A8%80%E5%B9%B6%E6%98%BE%E7%A4%BA"><span class="toc-number">1.4.1.</span> <span class="toc-text"> 获取留言并显示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">1.4.2.</span> <span class="toc-text"> 模板字符串</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%94%9F-ajax-%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.5.</span> <span class="toc-text"> 原生 ajax 的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%8E%9F%E7%94%9F%E7%9A%84-ajax-%E8%AF%B7%E6%B1%82"><span class="toc-number">1.5.1.</span> <span class="toc-text"> 第一个原生的 ajax 请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%90%86%E8%A7%A3-xmlhttprequest-%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.5.2.</span> <span class="toc-text"> 理解 XMLHttpRequest 对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%94%9F-ajax-%E5%B8%A6%E5%8F%82%E6%95%B0%E7%9A%84-get"><span class="toc-number">1.5.3.</span> <span class="toc-text"> 原生 ajax - 带参数的 get</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%94%9F-ajax-post-%E8%AF%B7%E6%B1%82"><span class="toc-number">1.5.4.</span> <span class="toc-text"> 原生 ajax-post 请求</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#post-%E8%AF%B7%E6%B1%82%E7%9A%84%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.5.4.1.</span> <span class="toc-text"> post 请求的格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%E7%94%A8%E6%88%B7%E7%99%BB%E9%99%86"><span class="toc-number">1.5.4.2.</span> <span class="toc-text"> 案例：用户登陆 *</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%94%9F-ajax-%E4%B8%AD-get-%E5%92%8C-post-%E5%8C%BA%E5%88%AB"><span class="toc-number">1.5.5.</span> <span class="toc-text"> 原生 ajax 中 get 和 post 区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#onreadystatechange-%E4%BA%8B%E4%BB%B6%E5%92%8C-readystate-%E5%B1%9E%E6%80%A7"><span class="toc-number">1.5.6.</span> <span class="toc-text"> onreadystatechange 事件和 readyState 属性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#onreadystatechange-%E4%BA%8B%E4%BB%B6"><span class="toc-number">1.5.6.1.</span> <span class="toc-text"> onreadystatechange 事件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#xhr-%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%8A%B6%E6%80%81"><span class="toc-number">1.5.6.2.</span> <span class="toc-text">  xhr  对象的状态</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#get-%E8%AF%B7%E6%B1%82%E5%9C%A8-ie-%E4%B8%AD%E7%9A%84%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98"><span class="toc-number">1.5.7.</span> <span class="toc-text"> get 请求在 IE 中的缓存问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E8%BF%94%E5%9B%9E%E7%9A%84%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.6.</span> <span class="toc-text"> 服务器端返回的数据格式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%86%E8%A7%A3%E4%B8%89%E4%B8%AA%E4%B8%8D%E5%90%8C%E7%BB%93%E6%9E%84%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">1.6.1.</span> <span class="toc-text"> 了解三个不同结构的字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#json"><span class="toc-number">1.6.2.</span> <span class="toc-text"> JSON</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E8%BF%94%E5%9B%9E%E5%80%BC%E6%98%AF-json-%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">1.6.2.1.</span> <span class="toc-text"> 如何判断返回值是 JSON 字符串</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#json-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.6.2.2.</span> <span class="toc-text"> JSON 是什么</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#json-%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E8%A7%81%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.6.2.3.</span> <span class="toc-text"> JSON 字符串常见格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#json-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E5%85%B3%E7%9A%84%E4%B8%A4%E4%B8%AA%E6%93%8D%E4%BD%9C"><span class="toc-number">1.6.2.4.</span> <span class="toc-text"> JSON 字符串相关的两个操作</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#jsonstringify"><span class="toc-number">1.6.2.4.1.</span> <span class="toc-text"> JSON.stringify</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#jsonparse"><span class="toc-number">1.6.2.4.2.</span> <span class="toc-text"> JSON.parse</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%E6%8A%8A%E5%9B%9B%E5%A4%A7%E5%90%8D%E8%91%97-json-%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%BB%A5%E8%A1%A8%E6%A0%BC%E7%9A%84%E5%BD%A2%E5%BC%8F%E6%98%BE%E7%A4%BA"><span class="toc-number">1.6.2.5.</span> <span class="toc-text"> 案例：把四大名著 json 字符串以表格的形式显示</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#xml%E7%AE%80%E5%8D%95%E4%BA%86%E8%A7%A3"><span class="toc-number">1.6.3.</span> <span class="toc-text"> XML (简单了解)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.6.3.1.</span> <span class="toc-text"> 示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E4%BA%86%E8%A7%A3"><span class="toc-number">1.6.3.2.</span> <span class="toc-text"> 操作（了解）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#xml-vs-json"><span class="toc-number">1.6.4.</span> <span class="toc-text"> XML VS JSON</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E5%92%8C%E5%BC%82%E6%AD%A5"><span class="toc-number">1.7.</span> <span class="toc-text"> 同步和异步</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E6%B4%BB%E4%B8%AD%E7%9A%84%E5%90%8C%E6%AD%A5%E5%BC%82%E6%AD%A5"><span class="toc-number">1.7.1.</span> <span class="toc-text"> 生活中的同步异步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ajax-%E5%AE%9A%E4%B9%89%E5%90%8C%E6%AD%A5%E5%92%8C%E5%BC%82%E6%AD%A5"><span class="toc-number">1.7.2.</span> <span class="toc-text"> ajax 定义同步和异步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E6%AD%A5%E7%9A%84-ajax"><span class="toc-number">1.7.3.</span> <span class="toc-text"> 异步的 ajax</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E7%9A%84-ajax"><span class="toc-number">1.7.4.</span> <span class="toc-text"> 同步的 ajax</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%94%9F-ajax-%E4%BB%A3%E7%A0%81%E5%B0%81%E8%A3%85"><span class="toc-number">1.8.</span> <span class="toc-text"> 原生 ajax 代码封装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A0%E6%8B%AC%E5%8F%B7%E5%8F%98%E6%88%90%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0"><span class="toc-number">1.8.1.</span> <span class="toc-text"> 加括号，变成一个函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E7%82%BC%E5%87%BA-type-%E5%8F%82%E6%95%B0"><span class="toc-number">1.8.2.</span> <span class="toc-text"> 提炼出 type 参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E7%82%BC%E5%87%BA-url-%E5%92%8C-data"><span class="toc-number">1.8.3.</span> <span class="toc-text"> 提炼出 url 和 data</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%84%E7%90%86-post-%E8%AF%B7%E6%B1%82"><span class="toc-number">1.8.4.</span> <span class="toc-text"> 处理 post 请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%AF%E6%8C%81%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0"><span class="toc-number">1.8.5.</span> <span class="toc-text"> 支持回调函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.8.6.</span> <span class="toc-text"> 总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E5%AE%83-ajax-%E5%BA%93%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">1.9.</span> <span class="toc-text"> 其它 ajax 库的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#jquery-%E4%B8%AD%E7%9A%84-ajax-%E6%96%B9%E6%B3%95"><span class="toc-number">1.9.1.</span> <span class="toc-text"> jquery 中的 ajax 方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ajax-%E7%9A%84%E5%85%B6%E5%AE%83%E9%80%89%E9%A1%B9"><span class="toc-number">1.9.1.1.</span> <span class="toc-text"> $.ajax 的其它选项</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ajax-%E6%96%B9%E6%B3%95%E7%9A%84%E7%AE%80%E4%BE%BF%E7%94%A8%E6%B3%95"><span class="toc-number">1.9.1.2.</span> <span class="toc-text"> $.ajax 方法的简便用法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#get-%E7%9A%84%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.9.1.2.1.</span> <span class="toc-text"> $.get 的格式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#post-%E7%9A%84%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.9.1.2.2.</span> <span class="toc-text"> $.post 的格式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#getjson"><span class="toc-number">1.9.1.2.3.</span> <span class="toc-text"> $.getJSON</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#axios-%E5%BA%93"><span class="toc-number">1.9.2.</span> <span class="toc-text"> axios 库</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.9.2.1.</span> <span class="toc-text"> 使用示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.9.2.2.</span> <span class="toc-text"> 是什么</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#xmlhttprequest-20"><span class="toc-number">1.10.</span> <span class="toc-text"> XMLHttpRequest 2.0</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#responsetype-response"><span class="toc-number">1.10.1.</span> <span class="toc-text"> responseType &#x2F; response</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.10.1.1.</span> <span class="toc-text"> 使用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.10.1.2.</span> <span class="toc-text"> 基本介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B-2"><span class="toc-number">1.10.1.3.</span> <span class="toc-text"> 示例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#formdata"><span class="toc-number">1.10.2.</span> <span class="toc-text"> FormData</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E8%8E%B7%E5%8F%96%E8%A1%A8%E5%8D%95%E4%B8%AD%E7%9A%84%E5%85%83%E7%B4%A0%E5%80%BC"><span class="toc-number">1.10.2.1.</span> <span class="toc-text"> 快速获取表单中的元素值</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%8D%E7%94%A8-formdata"><span class="toc-number">1.10.2.1.1.</span> <span class="toc-text"> 不用 FormData</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-formdata"><span class="toc-number">1.10.2.1.2.</span> <span class="toc-text"> 使用 FormData</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#formdata-%E5%AF%B9%E8%B1%A1%E7%9A%84-api"><span class="toc-number">1.10.2.2.</span> <span class="toc-text"> FormData 对象的 api</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E9%94%AE%E5%80%BC%E5%AF%B9"><span class="toc-number">1.10.2.3.</span> <span class="toc-text"> 自定义键值对</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6"><span class="toc-number">1.10.2.4.</span> <span class="toc-text"> 简单上传文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E8%BF%9B%E5%BA%A6%E6%9D%A1-onprogress"><span class="toc-number">1.10.2.5.</span> <span class="toc-text"> 上传文件进度条 onprogress</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%BC%E5%90%88%E6%A1%88%E4%BE%8B-%E4%BC%9A%E5%91%98%E7%AE%A1%E7%90%86"><span class="toc-number">1.11.</span> <span class="toc-text"> 综合案例 - 会员管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D-2"><span class="toc-number">1.11.1.</span> <span class="toc-text"> 基本介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.11.1.1.</span> <span class="toc-text"> 项目功能介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%BC%80%E5%8F%91%E8%A6%81%E7%82%B9"><span class="toc-number">1.11.1.2.</span> <span class="toc-text"> 项目的开发要点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E6%8E%A5%E5%8F%A3%E5%88%97%E8%A1%A8"><span class="toc-number">1.11.1.3.</span> <span class="toc-text"> 项目接口列表</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E5%90%8Dlist"><span class="toc-number">1.11.1.3.1.</span> <span class="toc-text"> 接口名：list</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E5%90%8Dlist-last"><span class="toc-number">1.11.1.3.2.</span> <span class="toc-text"> 接口名：list-last</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E5%90%8Ddetail"><span class="toc-number">1.11.1.3.3.</span> <span class="toc-text"> 接口名：detail</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E5%90%8Ddelete"><span class="toc-number">1.11.1.3.4.</span> <span class="toc-text"> 接口名：delete</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E5%90%8Dadd"><span class="toc-number">1.11.1.3.5.</span> <span class="toc-text"> 接口名：add</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#postman"><span class="toc-number">1.11.2.</span> <span class="toc-text"> postman</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E4%BC%9A%E5%91%98%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AF"><span class="toc-number">1.11.2.1.</span> <span class="toc-text"> 查看会员详细信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E4%BC%9A%E5%91%98"><span class="toc-number">1.11.2.2.</span> <span class="toc-text"> 删除会员</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B0%E5%A2%9E%E4%BC%9A%E5%91%98"><span class="toc-number">1.11.2.3.</span> <span class="toc-text"> 新增会员</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%A1%A8%E5%8D%95%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E6%8E%A7%E4%BB%B6"><span class="toc-number">1.11.2.3.1.</span> <span class="toc-text"> 表单中的文件控件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E5%9B%BE%E7%89%87%E9%A2%84%E8%A7%88"><span class="toc-number">1.11.2.3.2.</span> <span class="toc-text"> 本地图片预览</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%8A%E4%BC%A0%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91"><span class="toc-number">1.11.2.3.3.</span> <span class="toc-text"> 上传功能开发</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A0%E8%BD%BD%E6%9B%B4%E5%A4%9A"><span class="toc-number">1.11.2.4.</span> <span class="toc-text"> 加载更多</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E"><span class="toc-number">1.11.3.</span> <span class="toc-text"> 模板引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8-2"><span class="toc-number">1.11.3.1.</span> <span class="toc-text"> 作用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.11.3.2.</span> <span class="toc-text"> 使用模板引擎步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF%E8%AF%AD%E6%B3%95"><span class="toc-number">1.11.3.3.</span> <span class="toc-text"> 模板语法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E6%99%AE%E9%80%9A%E6%95%B0%E6%8D%AE%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%95%B0%E5%80%BC"><span class="toc-number">1.11.3.3.1.</span> <span class="toc-text"> 输出普通数据（字符串，数值）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.11.3.3.2.</span> <span class="toc-text"> 条件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%BE%AA%E7%8E%AF"><span class="toc-number">1.11.3.3.3.</span> <span class="toc-text"> 循环</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
+      </div>
+      <div class="related panel pjax" data-title="Related">
+      </div>
+      <div class="overview panel" data-title="Overview">
+        <div class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="image" itemprop="image" alt=""
+      data-src="/images/avatar.jpg">
+  <p class="name" itemprop="name"></p>
+  <div class="description" itemprop="description">smile everyDay</div>
+</div>
+
+<nav class="state">
+    <div class="item posts">
+      <a href="/archives/">
+        <span class="count">9</span>
+        <span class="name">posts</span>
+      </a>
+    </div>
+    <div class="item categories">
+      <a href="/categories/">
+        <span class="count">5</span>
+        <span class="name">categories</span>
+      </a>
+    </div>
+    <div class="item tags">
+      <a href="/tags/">
+        <span class="count">3</span>
+        <span class="name">tags</span>
+      </a>
+    </div>
+</nav>
+
+<div class="social">
+      <span class="exturl item github" data-url="aHR0cHM6Ly9naXRodWIuY29tL3lvdXJuYW1l" title="https:&#x2F;&#x2F;github.com&#x2F;yourname"><i class="ic i-github"></i></span>
+      <span class="exturl item twitter" data-url="aHR0cHM6Ly90d2l0dGVyLmNvbS95b3VybmFtZQ==" title="https:&#x2F;&#x2F;twitter.com&#x2F;yourname"><i class="ic i-twitter"></i></span>
+      <span class="exturl item zhihu" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS95b3VybmFtZQ==" title="https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;yourname"><i class="ic i-zhihu"></i></span>
+      <span class="exturl item music" data-url="aHR0cHM6Ly9tdXNpYy4xNjMuY29tLyMvdXNlci9ob21lP2lkPXlvdXJpZA==" title="https:&#x2F;&#x2F;music.163.com&#x2F;#&#x2F;user&#x2F;home?id&#x3D;yourid"><i class="ic i-cloud-music"></i></span>
+      <span class="exturl item weibo" data-url="aHR0cHM6Ly93ZWliby5jb20veW91cm5hbWU=" title="https:&#x2F;&#x2F;weibo.com&#x2F;yourname"><i class="ic i-weibo"></i></span>
+      <span class="exturl item about" data-url="aHR0cHM6Ly9hYm91dC5tZS95b3VybmFtZQ==" title="https:&#x2F;&#x2F;about.me&#x2F;yourname"><i class="ic i-address-card"></i></span>
+</div>
+
+<ul class="menu">
+  
+    
+  <li class="item">
+    <a href="/" rel="section"><i class="ic i-home"></i>Home</a>
+  </li>
+
+    
+  <li class="item">
+    <a href="/about/" rel="section"><i class="ic i-user"></i>About</a>
+  </li>
+
+        
+  <li class="item dropdown">
+      <a href="javascript:void(0);"><i class="ic i-feather"></i>Posts</a>
+    <ul class="submenu">
+
+        
+  <li class="item">
+    <a href="/archives/" rel="section"><i class="ic i-list-alt"></i>Archives</a>
+  </li>
+
+        
+  <li class="item">
+    <a href="/categories/" rel="section"><i class="ic i-th"></i>Categories</a>
+  </li>
+
+        
+  <li class="item">
+    <a href="/tags/" rel="section"><i class="ic i-tags"></i>Tags</a>
+  </li>
+
+  </ul>
+    
+  <li class="item">
+    <a href="/friends/" rel="section"><i class="ic i-heart"></i>friends</a>
+  </li>
+
+    
+  <li class="item">
+    <a href="/links/" rel="section"><i class="ic i-magic"></i>links</a>
+  </li>
+
+
+</ul>
+
+      </div>
+    </div>
+  </div>
+
+  <ul id="quick">
+    <li class="prev pjax">
+        <a href="/2020/08/13/computer-science/note/theme-shoka-doc/special/" rel="prev" title="Previous Post"><i class="ic i-chevron-left"></i></a>
+    </li>
+    <li class="up"><i class="ic i-arrow-up"></i></li>
+    <li class="down"><i class="ic i-arrow-down"></i></li>
+    <li class="next pjax">
+        <a href="/2020/11/23/ie%E5%85%BC%E5%AE%B9%E6%80%A7%E9%97%AE%E9%A2%98/" rel="next" title="Next Post"><i class="ic i-chevron-right"></i></a>
+    </li>
+    <li class="percent"></li>
+  </ul>
+</div>
+
+
+        </div>
+        <div class="dimmer"></div>
+      </div>
+    </main>
+    <footer id="footer">
+      <div class="inner">
+        <div class="widgets">
+          
+<div class="rpost pjax">
+  <h2>Random Posts</h2>
+  <ul>
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+<a href="/categories/computer-science/" title="In 计算机科学">计算机科学</a>
+<i class="ic i-angle-right"></i>
+<a href="/categories/computer-science/java/" title="In Java">Java</a>
+<i class="ic i-angle-right"></i>
+<a href="/categories/computer-science/java/course-1/" title="In 零基础学Java语言-浙江大学-翁恺">零基础学Java语言-浙江大学-翁恺</a>
+</div>
+
+    <span><a href="/2020/04/13/computer-science/java/course-1/week-2/" title="第2周 判断">第2周 判断</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+</div>
+
+    <span><a href="/2020/11/23/Ajax%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/" title="Ajax运行原理">Ajax运行原理</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+<a href="/categories/computer-science/" title="In 计算机科学">计算机科学</a>
+<i class="ic i-angle-right"></i>
+<a href="/categories/computer-science/note/" title="In 二进制杂谈">二进制杂谈</a>
+<i class="ic i-angle-right"></i>
+<a href="/categories/computer-science/note/Theme-Shoka-Documentation/" title="In Theme Shoka Documentation">Theme Shoka Documentation</a>
+</div>
+
+    <span><a href="/2020/08/13/computer-science/note/theme-shoka-doc/" title="Hexo主题Shoka &amp; Multi-Markdown-It渲染器使用说明">Hexo主题Shoka & Multi-Markdown-It渲染器使用说明</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+<a href="/categories/computer-science/" title="In 计算机科学">计算机科学</a>
+<i class="ic i-angle-right"></i>
+<a href="/categories/computer-science/java/" title="In Java">Java</a>
+<i class="ic i-angle-right"></i>
+<a href="/categories/computer-science/java/course-1/" title="In 零基础学Java语言-浙江大学-翁恺">零基础学Java语言-浙江大学-翁恺</a>
+</div>
+
+    <span><a href="/2020/04/12/computer-science/java/course-1/week-1/" title="第1周 计算">第1周 计算</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+<a href="/categories/computer-science/" title="In 计算机科学">计算机科学</a>
+<i class="ic i-angle-right"></i>
+<a href="/categories/computer-science/note/" title="In 二进制杂谈">二进制杂谈</a>
+<i class="ic i-angle-right"></i>
+<a href="/categories/computer-science/note/Theme-Shoka-Documentation/" title="In Theme Shoka Documentation">Theme Shoka Documentation</a>
+</div>
+
+    <span><a href="/2020/08/13/computer-science/note/theme-shoka-doc/special/" title="Step.4 主题特殊功能">Step.4 主题特殊功能</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+<a href="/categories/computer-science/" title="In 计算机科学">计算机科学</a>
+<i class="ic i-angle-right"></i>
+<a href="/categories/computer-science/note/" title="In 二进制杂谈">二进制杂谈</a>
+<i class="ic i-angle-right"></i>
+<a href="/categories/computer-science/note/Theme-Shoka-Documentation/" title="In Theme Shoka Documentation">Theme Shoka Documentation</a>
+</div>
+
+    <span><a href="/2020/08/13/computer-science/note/theme-shoka-doc/dependents/" title="Step.1 依赖插件">Step.1 依赖插件</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+<a href="/categories/computer-science/" title="In 计算机科学">计算机科学</a>
+<i class="ic i-angle-right"></i>
+<a href="/categories/computer-science/note/" title="In 二进制杂谈">二进制杂谈</a>
+<i class="ic i-angle-right"></i>
+<a href="/categories/computer-science/note/Theme-Shoka-Documentation/" title="In Theme Shoka Documentation">Theme Shoka Documentation</a>
+</div>
+
+    <span><a href="/2020/08/13/computer-science/note/theme-shoka-doc/config/" title="Step.2 基本配置">Step.2 基本配置</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+</div>
+
+    <span><a href="/2020/11/23/ie%E5%85%BC%E5%AE%B9%E6%80%A7%E9%97%AE%E9%A2%98/" title="Ie兼容性问题">Ie兼容性问题</a></span>
+  </li>
+
+      
+  <li class="item">
+    
+<div class="breadcrumb">
+<a href="/categories/computer-science/" title="In 计算机科学">计算机科学</a>
+<i class="ic i-angle-right"></i>
+<a href="/categories/computer-science/note/" title="In 二进制杂谈">二进制杂谈</a>
+<i class="ic i-angle-right"></i>
+<a href="/categories/computer-science/note/Theme-Shoka-Documentation/" title="In Theme Shoka Documentation">Theme Shoka Documentation</a>
+</div>
+
+    <span><a href="/2020/08/13/computer-science/note/theme-shoka-doc/display/" title="Step.3 界面显示">Step.3 界面显示</a></span>
+  </li>
+
+  </ul>
+</div>
+<div>
+  <h2>Recent Comments</h2>
+  <ul class="leancloud-recent-comment"></ul>
+</div>
+
+        </div>
+        <div class="status">
+  <div class="copyright">
+    
+    &copy; 2010 – 
+    <span itemprop="copyrightYear">2020</span>
+    <span class="with-love">
+      <i class="ic i-sakura rotate"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder"> @ 大脚丫的印记</span>
+  </div>
+  <div class="powered-by">
+    Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & Theme.<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2FtZWhpbWUvaGV4by10aGVtZS1zaG9rYQ==">Shoka</span>
+  </div>
+</div>
+
+      </div>
+    </footer>
+  </div>
+<script data-config type="text/javascript">
+  var LOCAL = {
+    path: '2020/11/23/Ajax运行机制/',
+    favicon: {
+      show: "（●´3｀●）Goooood",
+      hide: "(´Д｀)Booooom"
+    },
+    search : {
+      placeholder: "Search for Posts",
+      empty: "We didn't find any results for the search: ${query}",
+      stats: "${hits} results found in ${time} ms"
+    },
+    valine: true,fancybox: true,copyright: 'Copied to clipboard successfully! <br> All articles in this blog are licensed under <i class="ic i-creative-commons"></i>BY-NC-SA.',
+    ignores : [
+      function(uri) {
+        return uri.includes('#');
+      },
+      function(uri) {
+        return new RegExp(LOCAL.path+"$").test(uri);
+      }
+    ]
+  };
+</script>
+
+<script src="https://cdn.polyfill.io/v2/polyfill.js"></script>
+
+<script src="//cdn.jsdelivr.net/combine/npm/pace-js@1.0.2/pace.min.js,npm/pjax@0.2.8/pjax.min.js,npm/whatwg-fetch@3.4.0/dist/fetch.umd.min.js,npm/animejs@3.2.0/lib/anime.min.js,npm/algoliasearch@4/dist/algoliasearch-lite.umd.js,npm/instantsearch.js@4/dist/instantsearch.production.min.js,npm/lozad@1/dist/lozad.min.js,npm/quicklink@2/dist/quicklink.umd.js"></script>
+
+<script src="/js/app.js?v=0.2.5"></script>
+
+
+
+
+</body>
+</html>

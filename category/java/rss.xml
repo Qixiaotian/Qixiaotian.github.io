@@ -1,16 +1,13 @@
 <?xml version="1.0"?>
 <rss version="2.0">
     <channel>
-        <title>大脚丫的印 • Posts by &#34;java&#34; category</title>
+        <title> • Posts by &#34;java&#34; category</title>
         <link>http://example.com</link>
         <description>smile everyDay</description>
         <language>language</language>
         <pubDate>Mon, 13 Apr 2020 19:12:45 +0800</pubDate>
         <lastBuildDate>Mon, 13 Apr 2020 19:12:45 +0800</lastBuildDate>
         <category>about</category>
-        <category>Foo</category>
-        <category>Bar</category>
-        <category>Baz</category>
         <category>Hexo</category>
         <category>教程</category>
         <item>
